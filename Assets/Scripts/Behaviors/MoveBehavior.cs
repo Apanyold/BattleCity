@@ -9,9 +9,6 @@ namespace Didenko.BattleCity.Behaviors
         public float Speed { get => speed; set => speed = value; }
         public bool IsMoving => isMoving;
 
-        [SerializeField]
-        private Rigidbody2D rigidbody;
-
         private float speed = 3f;
         private bool isMoving = false;
 
@@ -47,8 +44,8 @@ namespace Didenko.BattleCity.Behaviors
 
         public void MoveForward(float speed)
         {
-            Vector3 moveVector = rigidbody.transform.up * speed * Time.deltaTime;
-
+            Vector3 moveVector = transform.TransformDirection(Vector3.up) * speed * Time.deltaTime;
+            
             var vec = transform.eulerAngles;
             vec.x = Mathf.Round(vec.x / 90) * 90;
             vec.y = Mathf.Round(vec.y / 90) * 90;
