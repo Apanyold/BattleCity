@@ -5,9 +5,10 @@ using Didenko.BattleCity.Behaviors;
 
 namespace Didenko.BattleCity.Utils
 {
-    public class Factory : MonoBehaviour
+    public class Factory
     {
         private ObjectPooler objectPooler;
+
         public Factory(ObjectPooler objectPooler)
         {
             this.objectPooler = objectPooler;

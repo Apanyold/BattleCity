@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Behaviors;
+using Didenko.BattleCity.Utils;
 
 namespace Didenko.BattleCity.Controllers 
 {
@@ -9,14 +10,16 @@ namespace Didenko.BattleCity.Controllers
     {
         [SerializeField]
         private MoveBehavior moveBehavior;
+        [SerializeField]
+        private CannonBehavior cannonBehavior;
 
         private float 
             horizontal,
             vertical;
 
-        private void Start()
+        public void Init(Factory factory)
         {
-
+            cannonBehavior.Init(factory);
         }
 
         private void FixedUpdate()
@@ -34,6 +37,9 @@ namespace Didenko.BattleCity.Controllers
         {
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
+
+            if (Input.GetKeyDown(KeyCode.Space))
+                cannonBehavior.Fire();
         }
     }
 }

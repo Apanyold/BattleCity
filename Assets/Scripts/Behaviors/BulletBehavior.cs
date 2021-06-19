@@ -8,28 +8,33 @@ namespace Didenko.BattleCity.Behaviors
     public class BulletBehavior : MonoBehaviour, IOnPoolReturn
     {
         public int Damage => damage;
-        public int Speed => speed;
+        public float BulletSpeed => bulletSpeed;
 
         [SerializeField]
         private MoveBehavior moveBehavior;
-        private Collider2D collider2D;
 
+        [SerializeField]
+        private float bulletSpeed = 5;
         private int damage;
-        private int speed = 5;
 
-        private void Start()
+        private float
+            timeToDestroy = 0.5f,
+            timeTicker;
+        private GameObject owner;
+        public void Init(int damage, GameObject owner)
         {
-            moveBehavior.Speed = speed;
-
-            StartCoroutine(StartMove());
-        }
-        public void Init(int damage, int speed)
-        {
+            timeTicker = Time.time;
+            this.damage = damage;
+            this.owner = owner;
             StartCoroutine(StartMove());
         }
 
         public void OnReturnToPool()
         {
+            owner = null;
+            damage = 0;
+            timeTicker = 0f;
+
             StopCoroutine(StartMove());
         }
 
@@ -39,13 +44,20 @@ namespace Didenko.BattleCity.Behaviors
             {
                 yield return null;
 
-                moveBehavior.MoveForward();
+                moveBehavior.MoveForward(bulletSpeed);
+
+                if (Time.time - timeTicker >= timeToDestroy)
+                    gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
             }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            OnReturnToPool();
+            if(collision.gameObject != owner)
+            {
+                Debug.Log("collision with: " + collision.gameObject.name);
+                gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
+            }
         }
     }
 }

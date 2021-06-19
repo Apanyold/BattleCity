@@ -20,8 +20,8 @@ namespace Didenko.BattleCity.Behaviors
             var  rotation = Quaternion.Euler(0, 0, -moveHorizontal * 90f);
             transform.rotation = rotation;
 
-            Vector3 moveVector = rigidbody.position + new Vector2(speed * Time.deltaTime * moveHorizontal, 0f);
-            rigidbody.MovePosition(moveVector);
+            Vector3 moveVector = Vector3.right * moveHorizontal * speed * Time.deltaTime;
+            transform.position += moveVector;
         }
 
         public void MoveVertical(float moveVertical)
@@ -34,15 +34,17 @@ namespace Didenko.BattleCity.Behaviors
 
             transform.rotation = rotation;
 
-            Vector3 moveVector = rigidbody.position + new Vector2(0f, speed * Time.deltaTime * moveVertical);
-            rigidbody.MovePosition(moveVector);
+            Vector3 moveVector = Vector3.up * moveVertical * speed * Time.deltaTime;
+            transform.position += moveVector;
         }
 
-        public void MoveForward()
+        public void MoveForward(float speed)
         {
             Vector3 moveVector = rigidbody.transform.up * speed * Time.deltaTime;
 
-            rigidbody.transform.position += moveVector;
+            Debug.DrawLine(transform.position, rigidbody.transform.position + moveVector, Color.red, 0.5f);
+
+            transform.position += moveVector;
         }
     }
 }

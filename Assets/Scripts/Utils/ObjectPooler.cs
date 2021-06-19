@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Didenko.BattleCity.Behaviors;
 
 namespace Didenko.BattleCity.Utils
 {
@@ -16,6 +17,9 @@ namespace Didenko.BattleCity.Utils
             string prefabPath = "PoolableObjects/" + poolObject.ToString();
             GameObject gameObject = null;
 
+            if (!PoolDictionary.ContainsKey(poolObject))
+                PoolDictionary[poolObject] = new Queue<GameObject>();
+
             if (PoolDictionary[poolObject].Count == 0)
             {
                 gameObject = Instantiate(Resources.Load<GameObject>(prefabPath));
@@ -27,6 +31,15 @@ namespace Didenko.BattleCity.Utils
                 gameObject.SetActive(true);
                 gameObject.name = $"{poolObject}_id{ Guid.NewGuid()}";
             }
+
+            if (gameObject.TryGetComponent(out PoolObjBehavior poolObjBehavior))
+                poolObjBehavior.returnToPoolCallback += ReturnToPool;
+            else
+            {
+                var beh = gameObject.AddComponent<PoolObjBehavior>();
+                beh.returnToPoolCallback += ReturnToPool;
+            }
+
             gameObject.transform.parent = gameZone;
 
             return gameObject;
@@ -35,14 +48,16 @@ namespace Didenko.BattleCity.Utils
         public void ReturnToPool(GameObject gameObject)
         {
             gameObject.SetActive(false);
-            gameObject.transform.parent = this.transform;
+            gameObject.transform.parent = transform;
+            gameObject.GetComponent<PoolObjBehavior>().returnToPoolCallback -= ReturnToPool;
 
             var onRetun = gameObject.GetComponents<IOnPoolReturn>();
             foreach (var item in onRetun)
                 item.OnReturnToPool();
 
             var index = gameObject.name.IndexOf("_id");
-            var poolName = (PoolObject)Enum.Parse(typeof(PoolObject), gameObject.name.Remove(index));
+            var name = gameObject.name.Remove(index);
+            var poolName = (PoolObject)Enum.Parse(typeof(PoolObject), name);
 
             PoolDictionary[poolName].Enqueue(gameObject);
         }

@@ -11,10 +11,14 @@ namespace Didenko.BattleCity.Controllers
         [SerializeField]
         private ObjectPooler objectPooler;
 
+        private Factory factory;
 
         private void Awake()
         {
-            
+            factory = new Factory(objectPooler);
+
+            var player = FindObjectOfType<PlayerController>();
+            player.Init(factory);
         }
     }
 }
