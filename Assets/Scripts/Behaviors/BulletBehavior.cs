@@ -10,22 +10,26 @@ namespace Didenko.BattleCity.Behaviors
         public int Damage => damage;
         public float BulletSpeed => bulletSpeed;
 
+        public bool isPenetrated;
+
         [SerializeField]
         private MoveBehavior moveBehavior;
 
         [SerializeField]
         private float bulletSpeed = 5;
-        private int damage;
+        private int damage = 1;
 
         private float
-            timeToDestroy = 0.5f,
+            timeToDestroy = 1f,
             timeTicker;
+
         private GameObject owner;
         public void Init(int damage, GameObject owner)
         {
             timeTicker = Time.time;
             this.damage = damage;
             this.owner = owner;
+
             StartCoroutine(StartMove());
         }
 
@@ -53,9 +57,12 @@ namespace Didenko.BattleCity.Behaviors
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if(collision.gameObject != owner)
+            var go = collision.gameObject;
+            if (go != owner)
             {
-                Debug.Log("collision with: " + collision.gameObject.name);
+                if (isPenetrated && go.TryGetComponent(out AttackableBehavior attackableBehavior))
+                    attackableBehavior.Health -= damage;
+
                 gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
             }
         }

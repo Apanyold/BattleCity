@@ -12,14 +12,17 @@ namespace Didenko.BattleCity.Controllers
         private MoveBehavior moveBehavior;
         [SerializeField]
         private CannonBehavior cannonBehavior;
+        [SerializeField]
+        private TowerBehavior towerBehavior;
 
-        private float 
+        private int 
             horizontal,
             vertical;
 
         public void Init(Factory factory)
         {
             cannonBehavior.Init(factory);
+            towerBehavior.Init(75);
         }
 
         private void FixedUpdate()
@@ -35,8 +38,8 @@ namespace Didenko.BattleCity.Controllers
 
         private void Update()
         {
-            horizontal = Input.GetAxisRaw("Horizontal");
-            vertical = Input.GetAxisRaw("Vertical");
+            horizontal = (int)Input.GetAxisRaw("Horizontal");
+            vertical = (int)Input.GetAxisRaw("Vertical");
 
             if (Input.GetKeyDown(KeyCode.Space))
                 cannonBehavior.Fire();
