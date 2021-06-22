@@ -5,6 +5,7 @@ namespace Didenko.BattleCity.Utils
     public interface ISetupable
     {
         void Setup(SetupData setupData);
+        void InitSetup();
     }
 
     public struct SetupData

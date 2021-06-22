@@ -23,7 +23,6 @@ namespace Didenko.BattleCity.Controllers
             towerBehavior = GetComponent<TowerBehavior>();
 
             towerBehavior.Init(75);
-            cannonBehavior.Init(factory);
 
             cannonBehavior.Setup(new SetupData(1, SetupType.Cannon, CannonType.FC, ""));
         }

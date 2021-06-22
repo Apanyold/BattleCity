@@ -23,12 +23,14 @@ namespace Didenko.BattleCity.Utils
 
             if (gameObject.TryGetComponent(out TeamBehavior teamBehavior))
                 teamBehavior.SetTeam(team);
-            else
-                throw new System.Exception("Object dosent have TeamBehavior");
 
             gameObject.transform.position = position;
 
             configSetter.SetData(gameObject);
+
+            if (gameObject.TryGetComponent(out TankBehavior tankBehavior))
+                ConfigTank(tankBehavior);
+                
 
             return gameObject;
         }
@@ -41,6 +43,11 @@ namespace Didenko.BattleCity.Utils
             gameObject.transform.rotation = rotation;
 
             return gameObject;
+        }
+
+        public void ConfigTank(TankBehavior tankBehavior)
+        {
+            tankBehavior.SetupTank();
         }
     }
 }

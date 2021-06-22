@@ -10,7 +10,14 @@ namespace Didenko.BattleCity.Utils
     {
         [SerializeField]
         private Transform gameZone;
+
         private Dictionary<PoolObject, Queue<GameObject>> PoolDictionary = new Dictionary<PoolObject, Queue<GameObject>>();
+
+        private Factory factory;
+        public void Init(Factory factory)
+        {
+            this.factory = factory;
+        }
 
         public GameObject GetFromPool(PoolObject poolObject)
         {
@@ -24,6 +31,9 @@ namespace Didenko.BattleCity.Utils
             {
                 gameObject = Instantiate(Resources.Load<GameObject>(prefabPath));
                 gameObject.name = $"{poolObject}_id{ Guid.NewGuid()}";
+
+                if (gameObject.TryGetComponent(out TankBehavior tankBehavior))
+                    tankBehavior.Init(factory);
             }
             else
             {

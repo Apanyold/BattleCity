@@ -22,13 +22,18 @@ namespace Didenko.BattleCity.Controllers
             configSetter.DownloadDatas(gameData);
 
             factory = new Factory(objectPooler, configSetter);
-            factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
+
+            objectPooler.Init(factory);
+
+            var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
+
+            factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
+            player.AddComponent<PlayerController>().Init(factory);
         }
 
         private void Start()
         {
-            var player = FindObjectOfType<PlayerController>();
-            player.Init(factory);
+
         }
     }
 }

@@ -5,7 +5,7 @@ using Didenko.BattleCity.Utils;
 
 namespace Didenko.BattleCity.Behaviors
 {
-    public class DropBehavior : MonoBehaviour
+    public class DropBehavior : MonoBehaviour, IOnPoolReturn
     {
         [SerializeField]
         private TeamBehavior teamBehavior;
@@ -15,6 +15,7 @@ namespace Didenko.BattleCity.Behaviors
         {
             this.factory = factory;
         }
+
         public void DropModule()
         {
             var modules = this.gameObject.GetComponents<IModuleDrop>();
@@ -23,6 +24,11 @@ namespace Didenko.BattleCity.Behaviors
 
             var gameObject = factory.CreateObject(PoolObject.DroppedModule, transform.position, teamBehavior.Team);
             gameObject.GetComponent<DroppedModuleBehavior>().Init(teamBehavior.Team, moduleData);
+        }
+
+        public void OnReturnToPool()
+        {
+            DropModule();
         }
     }
 }

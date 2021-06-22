@@ -12,7 +12,7 @@ namespace Didenko.BattleCity.Behaviors
         public event Action<BulletBehavior> OnFired;
         public int Damage => damage;
 
-        public DataType DataType { get; set; } = DataType.cannondatas;
+        public DataType DataType => DataType.cannonDatas;
 
         [SerializeField]
         private TeamBehavior teamBehavior;
@@ -34,6 +34,8 @@ namespace Didenko.BattleCity.Behaviors
 
         public void Setup(SetupData setupData)
         {
+            if (setupData.setupType != SetupType.Cannon)
+                return;
             currentData = cannonData.Find(x => x.cannonType == setupData.cannonType && x.lvl == setupData.lvl);
 
             damage = currentData.damage;
@@ -64,6 +66,14 @@ namespace Didenko.BattleCity.Behaviors
             var data = new SetupData(currentData.lvl, SetupType.Cannon, currentData.cannonType, currentData.spriteName);
             return data;
         }
+
+        public void InitSetup()
+        {
+            var array = Enum.GetValues(typeof(CannonType));
+            var cannonType = (CannonType)array.GetValue(UnityEngine.Random.Range(0, array.Length - 2));
+            int lvl = UnityEngine.Random.Range(0, cannonData.Count - 1);
+            Setup(new SetupData(lvl, SetupType.Cannon, cannonType, ""));
+        }
     }
 
     public struct CannonData
@@ -79,6 +89,6 @@ namespace Didenko.BattleCity.Behaviors
     {
         FC = 2,
         PC = 1,
-        None,
+        None
     }
 }

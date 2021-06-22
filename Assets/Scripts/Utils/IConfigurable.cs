@@ -1,21 +1,22 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
-using Didenko.BattleCity.Behaviors;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Didenko.BattleCity.Utils
 {
     public interface IConfigurable
     {
         void SetConfings(string data);
-        DataType DataType { get; set; }
+        DataType DataType { get; }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
     public enum DataType
     {
-        [Description("cannondatas")] cannondatas
+        [Description("cannonDatas")] cannonDatas,
+        [Description("hullDatas")] hullDatas,
+        [Description("towerDatas")] towerDatas
     }
 
     public struct TanksData

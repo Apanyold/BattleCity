@@ -61,18 +61,6 @@ namespace Didenko.BattleCity.Behaviors
             }
         }
 
-        //private void OnCollisionEnter2D(Collision2D collision)
-        //{
-        //    var go = collision.gameObject;
-        //    if (go != owner)
-        //    {
-        //        if (isPenetrated && go.TryGetComponent(out AttackableBehavior attackableBehavior))
-        //            attackableBehavior.Health -= damage;
-
-        //        gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
-        //    }
-        //}
-
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var go = collision.gameObject;
