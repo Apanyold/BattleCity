@@ -99,7 +99,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 84aadc6e0f97a384a8a8bbd0110bacbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65875f468d8ae894bb78b56f4cd1be49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 4524924083273632750}
   cannonBehavior: {fileID: 4524924082328152260}
   teamBehavior: {fileID: 4524924082328152263}
   towerSprite: {fileID: 4524924083273632750}
@@ -280,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a19166a8f31364fb6a9b1f58104dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hullSprite: {fileID: 4524924083083783801}
+  spriteRenderer: {fileID: 4524924083083783801}
   attackableBehavior: {fileID: 4524924082328152282}
   teamBehavior: {fileID: 4524924082328152263}
   moveBehavior: {fileID: 4524924082328152281}
@@ -412,7 +413,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: a44f010c515e86f41871a1b5fe6aa621, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -493,7 +494,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 1d7e13bcf2a9911448ffbed2c6bf1773, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -577,7 +578,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 47dd68706cc2f6e419425bdce419fc9e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

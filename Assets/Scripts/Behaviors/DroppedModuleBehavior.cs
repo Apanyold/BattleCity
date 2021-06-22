@@ -7,27 +7,27 @@ namespace Didenko.BattleCity.Behaviors
 {
     public class DroppedModuleBehavior : SpriteLoader, IOnPoolReturn
     {
-        public SetupData SetupData => setupData;
+        public DropData DropData => dropData;
 
         [SerializeField]
         private PoolObjBehavior poolObj;
-        private SetupData setupData;
+        private DropData dropData;
 
         private void Awake()
         {
-            //Init(Team.Blue, new SetupData(3, SetupType.Cannon, CannonType.PC, "PC3"));
+            Init(Team.Blue, new DropData("PC3", 3));
         }
 
-        public void Init(Team team, SetupData setupData)
+        public void Init(Team team, DropData data)
         {
-            this.setupData = setupData;
-            LoadSpriteForTeam(setupData.spriteName, team);
+            this.dropData = data;
+            LoadSpriteForTeam(data.spriteName, team);
             StartCoroutine(Rotate());
         }
 
-        public SetupData PickUp()
+        public DropData PickUp()
         {
-            var data = new SetupData(setupData);
+            var data = new DropData(dropData.spriteName, dropData.lvl);
             Destroy();
             return data;
         }
@@ -40,7 +40,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public void OnReturnToPool()
         {
-            setupData = new SetupData();
+            dropData = new DropData();
         }
 
         private IEnumerator Rotate()

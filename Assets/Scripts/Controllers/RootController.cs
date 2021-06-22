@@ -25,9 +25,10 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-            var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
+            var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Blue);
 
-            factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
+            //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
+
             player.AddComponent<PlayerController>().Init(factory);
         }
 

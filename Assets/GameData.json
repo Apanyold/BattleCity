@@ -1,49 +1,86 @@
 {
   "tankData":
   {
-      "cannonDatas": [
-    {
-      "damage" : 1,
-      "cannonType": "FC",
-      "spriteName": "FC1",
-      "flyDisnatce" : 3,
+    "cannonDatas": [
+        {
+          "damage" : 1,
+          "cannonType": "FC",
+          "spriteName": "FC1",
+          "flyDisnatce" : 3,
+          "lvl" : 1
+        },
+        {
+          "damage" : 2,
+          "cannonType": "FC",
+          "spriteName": "FC2",
+          "flyDisnatce" : 4,
+          "lvl" : 2
+        },
+        {
+          "damage" : 3,
+          "cannonType": "FC",
+          "spriteName": "FC3",
+          "flyDisnatce" : 5,
+          "lvl" : 3
+        },
+        {
+          "damage" : 2,
+          "cannonType": "PC",
+          "spriteName": "PC1",
+          "flyDisnatce" : 4,
+          "lvl" : 1
+        },
+        {
+          "damage" : 4,
+          "cannonType": "PC",
+          "spriteName": "PC2",
+          "flyDisnatce" : 6,
+          "lvl" : 2
+        },
+        {
+          "damage" : 6,
+          "cannonType": "PC",
+          "spriteName": "PC3",
+          "flyDisnatce" : 8,
+          "lvl" : 3
+        }
+    ],
+    "hullDatas" : [
+      {
+      "health" : 4,
+      "moveSpeed": 3,
+      "spriteName" : "Hull1",
       "lvl" : 1
-    },
-    {
-      "damage" : 2,
-      "cannonType": "FC",
-      "spriteName": "FC2",
-      "flyDisnatce" : 4,
+      },
+      {
+      "health" : 8,
+      "moveSpeed": 2,
+      "spriteName" : "Hull2",
       "lvl" : 2
-    },
-    {
-      "damage" : 3,
-      "cannonType": "FC",
-      "spriteName": "FC3",
-      "flyDisnatce" : 5,
+      },
+      {
+      "health" : 12,
+      "moveSpeed": 1,
+      "spriteName" : "Hull3",
       "lvl" : 3
-    },
-    {
-      "damage" : 2,
-      "cannonType": "PC",
-      "spriteName": "PC1",
-      "flyDisnatce" : 4,
+      }
+    ],
+    "towerDatas":[
+      {
+      "penetrationChance" : 70,
+      "spriteName" : "Tower1",
       "lvl" : 1
-    },
-    {
-      "damage" : 4,
-      "cannonType": "PC",
-      "spriteName": "PC2",
-      "flyDisnatce" : 6,
+      },
+      {
+      "penetrationChance" : 80,
+      "spriteName" : "Tower2",
       "lvl" : 2
-    },
-    {
-      "damage" : 6,
-      "cannonType": "PC",
-      "spriteName": "PC3",
-      "flyDisnatce" : 8,
+      },
+      {
+      "penetrationChance" : 90,
+      "spriteName" : "Tower3",
       "lvl" : 3
-    }
-  ]
+      }
+      ]
   }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 using Didenko.BattleCity.Utils;
 using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Didenko.BattleCity.Behaviors
 {
@@ -24,7 +27,7 @@ namespace Didenko.BattleCity.Behaviors
             flyDisnatce;
 
         private Factory factory;
-        private List<CannonData> cannonData = new List<CannonData>();
+        private List<CannonData> cannonDatas = new List<CannonData>();
         private CannonData currentData;
 
         public void Init(Factory factory)
@@ -36,11 +39,12 @@ namespace Didenko.BattleCity.Behaviors
         {
             if (setupData.setupType != SetupType.Cannon)
                 return;
-            currentData = cannonData.Find(x => x.cannonType == setupData.cannonType && x.lvl == setupData.lvl);
+            currentData = cannonDatas.Find(x => x.cannonType == setupData.cannonType && x.lvl == setupData.lvl);
 
             damage = currentData.damage;
             flyDisnatce = currentData.flyDisnatce;
 
+            Debug.Log($"Cannon {currentData.spriteName}, {teamBehavior.Team}");
             LoadSpriteForTeam(currentData.spriteName, teamBehavior.Team);
         }
 
@@ -58,21 +62,24 @@ namespace Didenko.BattleCity.Behaviors
 
         public void SetConfings(string data)
         {
-            cannonData = JsonConvert.DeserializeObject<List<CannonData>>(data);
+            cannonDatas = JsonConvert.DeserializeObject<List<CannonData>>(data);
         }
 
-        public SetupData DropModule()
+        public DropData DropModule()
         {
-            var data = new SetupData(currentData.lvl, SetupType.Cannon, currentData.cannonType, currentData.spriteName);
+            var data = new DropData(currentData.spriteName, currentData.lvl);
             return data;
         }
 
         public void InitSetup()
         {
             var array = Enum.GetValues(typeof(CannonType));
-            var cannonType = (CannonType)array.GetValue(UnityEngine.Random.Range(0, array.Length - 2));
-            int lvl = UnityEngine.Random.Range(0, cannonData.Count - 1);
-            Setup(new SetupData(lvl, SetupType.Cannon, cannonType, ""));
+            var cannonType = (CannonType)array.GetValue(UnityEngine.Random.Range(0, array.Length - 1));
+
+            var maxLvl = cannonDatas.FindAll(x => x.cannonType == cannonType).Count();
+            int lvl = UnityEngine.Random.Range(1, maxLvl + 1);
+
+            Setup(new SetupData(lvl, SetupType.Cannon, cannonType));
         }
     }
 
@@ -85,10 +92,14 @@ namespace Didenko.BattleCity.Behaviors
         public int lvl;
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum CannonType 
     {
+        [EnumMember(Value = "FC")]
         FC = 2,
+        [EnumMember(Value = "PC")]
         PC = 1,
+        [EnumMember(Value = "None")]
         None
     }
 }

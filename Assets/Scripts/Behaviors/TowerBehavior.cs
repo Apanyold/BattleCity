@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
+using Newtonsoft.Json;
 
 namespace Didenko.BattleCity.Behaviors
 {
@@ -14,20 +15,20 @@ namespace Didenko.BattleCity.Behaviors
         [SerializeField]
         private SpriteRenderer towerSprite;
 
-        private float penetrationChance = 75;
+        private List<TowerData> towerDatas;
+        private TowerData currentData;
 
-        public DataType DataType => throw new System.NotImplementedException();
+        public DataType DataType => DataType.towerDatas;
 
         public void Init(float penetrationChance)
         {
-            this.penetrationChance = penetrationChance;
             cannonBehavior.OnFired += CalculateChance;
         }
 
         public void CalculateChance(BulletBehavior bulletBehavior)
         {
             var chance = Random.Range(0, 100);
-            bool isPenetrated = penetrationChance >= chance;
+            bool isPenetrated = currentData.penetrationChance >= chance;
             Debug.Log("isPenetrated" + isPenetrated);
             bulletBehavior.isPenetrated = isPenetrated;
         }
@@ -39,22 +40,28 @@ namespace Didenko.BattleCity.Behaviors
 
         public void SetConfings(string data)
         {
-            throw new System.NotImplementedException();
+            towerDatas = JsonConvert.DeserializeObject<List<TowerData>>(data);
         }
 
         public void Setup(SetupData setupData)
         {
-            throw new System.NotImplementedException();
+            if (setupData.setupType != SetupType.Tower)
+                return;
+            currentData = towerDatas.Find(x => x.lvl == setupData.lvl);
+
+            LoadSpriteForTeam(currentData.spriteName, teamBehavior.Team);
         }
 
         public void InitSetup()
         {
-            throw new System.NotImplementedException();
+            int lvl = UnityEngine.Random.Range(1, towerDatas.Count + 1);
+            Setup(new SetupData(lvl, SetupType.Tower, CannonType.None));
         }
 
-        public SetupData DropModule()
+        public DropData DropModule()
         {
-            throw new System.NotImplementedException();
+            var data = new DropData(currentData.spriteName, currentData.lvl);
+            return data;
         }
     }
 

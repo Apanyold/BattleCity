@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Behaviors;
 using Didenko.BattleCity.Utils;
+using UnityEngine.SceneManagement;
 
 namespace Didenko.BattleCity.Controllers 
 {
@@ -22,9 +23,7 @@ namespace Didenko.BattleCity.Controllers
             cannonBehavior = GetComponent<CannonBehavior>();
             towerBehavior = GetComponent<TowerBehavior>();
 
-            towerBehavior.Init(75);
-
-            cannonBehavior.Setup(new SetupData(1, SetupType.Cannon, CannonType.FC, ""));
+            //cannonBehavior.Setup(new SetupData(1, SetupType.Cannon, CannonType.FC));
         }
 
         private void FixedUpdate()
@@ -45,6 +44,8 @@ namespace Didenko.BattleCity.Controllers
 
             if (Input.GetKeyDown(KeyCode.Space))
                 cannonBehavior.Fire();
+            if(Input.GetKeyDown(KeyCode.R))
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

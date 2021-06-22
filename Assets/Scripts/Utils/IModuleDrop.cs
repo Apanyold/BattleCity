@@ -6,6 +6,18 @@ namespace Didenko.BattleCity.Utils
 {
     public interface IModuleDrop
     {
-        SetupData DropModule();
+        DropData DropModule();
+    }
+
+    public struct DropData
+    {
+        public string spriteName;
+        public int lvl;
+
+        public DropData(string spriteName, int lvl)
+        {
+            this.spriteName = spriteName;
+            this.lvl = lvl;
+        }
     }
 }
