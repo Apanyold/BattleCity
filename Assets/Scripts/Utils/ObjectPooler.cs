@@ -65,8 +65,8 @@ namespace Didenko.BattleCity.Utils
 
     public enum PoolObject
     {
-        BlueTank,
-        RedTank,
+        Tank,
         Bullet,
+        DroppedModule,
     }
 }

@@ -17,18 +17,24 @@ namespace Didenko.BattleCity.Behaviors
 
         [SerializeField]
         private float bulletSpeed = 5;
-        private int damage = 1;
+        private int 
+            damage,
+            flyDistacne;
 
         private float
             timeToDestroy = 1f,
             timeTicker;
+        private Vector3 startPosition;
 
         private GameObject owner;
-        public void Init(int damage, GameObject owner)
+        public void Init(int damage, GameObject owner, int flyDistacne)
         {
             timeTicker = Time.time;
             this.damage = damage;
             this.owner = owner;
+            this.flyDistacne = flyDistacne;
+
+            startPosition = transform.position;
 
             StartCoroutine(StartMove());
         }
@@ -50,12 +56,24 @@ namespace Didenko.BattleCity.Behaviors
 
                 moveBehavior.MoveForward(bulletSpeed);
 
-                if (Time.time - timeTicker >= timeToDestroy)
+                if(Vector3.Distance(startPosition, transform.position)/2 >= flyDistacne)
                     gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
             }
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        //private void OnCollisionEnter2D(Collision2D collision)
+        //{
+        //    var go = collision.gameObject;
+        //    if (go != owner)
+        //    {
+        //        if (isPenetrated && go.TryGetComponent(out AttackableBehavior attackableBehavior))
+        //            attackableBehavior.Health -= damage;
+
+        //        gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
+        //    }
+        //}
+
+        private void OnTriggerEnter2D(Collider2D collision)
         {
             var go = collision.gameObject;
             if (go != owner)

@@ -9,6 +9,10 @@ namespace Didenko.BattleCity.Behaviors
     {
         [SerializeField]
         private CannonBehavior cannonBehavior;
+        [SerializeField]
+        private TeamBehavior teamBehavior;
+        [SerializeField]
+        private SpriteRenderer towerSprite;
 
         private float penetrationChance = 75;
 
@@ -30,5 +34,12 @@ namespace Didenko.BattleCity.Behaviors
         {
             cannonBehavior.OnFired -= CalculateChance;
         }
+    }
+
+    public struct TowerData
+    {
+        public float penetrationChance;
+        public string spriteName;
+        public int lvl;
     }
 }

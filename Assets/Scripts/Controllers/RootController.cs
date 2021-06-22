@@ -10,13 +10,23 @@ namespace Didenko.BattleCity.Controllers
     {
         [SerializeField]
         private ObjectPooler objectPooler;
+        [SerializeField]
+        private TextAsset gameData;
 
         private Factory factory;
+        private ConfigSetter configSetter;
 
         private void Awake()
         {
-            factory = new Factory(objectPooler);
+            configSetter = new ConfigSetter();
+            configSetter.DownloadDatas(gameData);
 
+            factory = new Factory(objectPooler, configSetter);
+            factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
+        }
+
+        private void Start()
+        {
             var player = FindObjectOfType<PlayerController>();
             player.Init(factory);
         }

@@ -1,0 +1,49 @@
+{
+  "tankData":
+  {
+      "cannonDatas": [
+    {
+      "damage" : 1,
+      "cannonType": "FC",
+      "spriteName": "FC1",
+      "flyDisnatce" : 3,
+      "lvl" : 1
+    },
+    {
+      "damage" : 2,
+      "cannonType": "FC",
+      "spriteName": "FC2",
+      "flyDisnatce" : 4,
+      "lvl" : 2
+    },
+    {
+      "damage" : 3,
+      "cannonType": "FC",
+      "spriteName": "FC3",
+      "flyDisnatce" : 5,
+      "lvl" : 3
+    },
+    {
+      "damage" : 2,
+      "cannonType": "PC",
+      "spriteName": "PC1",
+      "flyDisnatce" : 4,
+      "lvl" : 1
+    },
+    {
+      "damage" : 4,
+      "cannonType": "PC",
+      "spriteName": "PC2",
+      "flyDisnatce" : 6,
+      "lvl" : 2
+    },
+    {
+      "damage" : 6,
+      "cannonType": "PC",
+      "spriteName": "PC3",
+      "flyDisnatce" : 8,
+      "lvl" : 3
+    }
+  ]
+  }
+}

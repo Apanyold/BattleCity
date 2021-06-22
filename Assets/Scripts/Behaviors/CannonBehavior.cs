@@ -3,43 +3,82 @@ using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
 using System;
+using Newtonsoft.Json;
 
 namespace Didenko.BattleCity.Behaviors
 {
-    public class CannonBehavior : MonoBehaviour
+    public class CannonBehavior : SpriteLoader, IConfigurable, ISetupable, IModuleDrop
     {
         public event Action<BulletBehavior> OnFired;
         public int Damage => damage;
 
+        public DataType DataType { get; set; } = DataType.cannondatas;
+
         [SerializeField]
         private TeamBehavior teamBehavior;
         [SerializeField]
-        private List<Transform> fireTransfom;
+        private List<Transform> fireTransfoms;
 
-        private int barrelsCount = 1;
-        private int damage = 1;
+        private int 
+            damage,
+            flyDisnatce;
+
         private Factory factory;
+        private List<CannonData> cannonData = new List<CannonData>();
+        private CannonData currentData;
 
         public void Init(Factory factory)
         {
             this.factory = factory;
         }
 
-        public void Setup(int barrelsCount)
+        public void Setup(SetupData setupData)
         {
-            this.barrelsCount = barrelsCount;
+            currentData = cannonData.Find(x => x.cannonType == setupData.cannonType && x.lvl == setupData.lvl);
+
+            damage = currentData.damage;
+            flyDisnatce = currentData.flyDisnatce;
+
+            LoadSpriteForTeam(currentData.spriteName, teamBehavior.Team);
         }
 
         public void Fire()
         {
-            for (int i = 0; i < barrelsCount; i++)
+            for (int i = 0; i < (int)currentData.cannonType; i++)
             {
-                var go = factory.CreateObject(PoolObject.Bullet, fireTransfom[i].position, teamBehavior.Team, transform.rotation);
+                var go = factory.CreateObject(PoolObject.Bullet, fireTransfoms[i].position, teamBehavior.Team, transform.rotation);
                 var bullet = go.GetComponent<BulletBehavior>();
 
                 OnFired?.Invoke(bullet);
-                bullet.Init(damage, gameObject);
+                bullet.Init(damage, gameObject, flyDisnatce);
             }
         }
+
+        public void SetConfings(string data)
+        {
+            cannonData = JsonConvert.DeserializeObject<List<CannonData>>(data);
+        }
+
+        public SetupData DropModule()
+        {
+            var data = new SetupData(currentData.lvl, SetupType.Cannon, currentData.cannonType, currentData.spriteName);
+            return data;
+        }
+    }
+
+    public struct CannonData
+    {
+        public int damage;
+        public CannonType cannonType;
+        public string spriteName;
+        public int flyDisnatce;
+        public int lvl;
+    }
+
+    public enum CannonType 
+    {
+        FC = 2,
+        PC = 1,
+        None,
     }
 }

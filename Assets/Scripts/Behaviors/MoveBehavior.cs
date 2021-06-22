@@ -14,7 +14,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public void MoveHorizontal(int moveHorizontal)
         {
-            //for some reason i'm can not round the 90 and -90 degrees rotation
+            //for some reason can't round the 90 and -90 degrees rotation
             float rotation;
             if (moveHorizontal > 0)
                 rotation = -90f;
@@ -24,8 +24,9 @@ namespace Didenko.BattleCity.Behaviors
             transform.eulerAngles = new Vector3Int(0, 0, 0);
             transform.localRotation = Quaternion.Euler(0, 0, rotation);
 
-            Vector3 moveVector = Vector3.right * moveHorizontal * speed * Time.deltaTime;
-            transform.position += moveVector;
+            MoveForward(speed);
+            //Vector3 moveVector = Vector3.right * moveHorizontal * speed * Time.deltaTime;
+            //transform.position += moveVector;
         }
 
         public void MoveVertical(int moveVertical)
@@ -38,8 +39,9 @@ namespace Didenko.BattleCity.Behaviors
 
             transform.rotation = rotation;
 
-            Vector3 moveVector = Vector3.up * moveVertical * speed * Time.deltaTime;
-            transform.position += moveVector;
+            MoveForward(speed);
+            //Vector3 moveVector = Vector3.up * moveVertical * speed * Time.deltaTime;
+            //transform.position += moveVector;
         }
 
         public void MoveForward(float speed)

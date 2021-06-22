@@ -8,10 +8,12 @@ namespace Didenko.BattleCity.Utils
     public class Factory
     {
         private ObjectPooler objectPooler;
+        private ConfigSetter configSetter;
 
-        public Factory(ObjectPooler objectPooler)
+        public Factory(ObjectPooler objectPooler, ConfigSetter configSetter)
         {
             this.objectPooler = objectPooler;
+            this.configSetter = configSetter;
         }
 
         public GameObject CreateObject(PoolObject poolObject, Vector3 position, Team team)
@@ -25,6 +27,8 @@ namespace Didenko.BattleCity.Utils
                 throw new System.Exception("Object dosent have TeamBehavior");
 
             gameObject.transform.position = position;
+
+            configSetter.SetData(gameObject);
 
             return gameObject;
         }

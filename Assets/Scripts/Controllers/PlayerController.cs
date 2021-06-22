@@ -8,11 +8,8 @@ namespace Didenko.BattleCity.Controllers
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField]
         private MoveBehavior moveBehavior;
-        [SerializeField]
         private CannonBehavior cannonBehavior;
-        [SerializeField]
         private TowerBehavior towerBehavior;
 
         private int 
@@ -21,8 +18,14 @@ namespace Didenko.BattleCity.Controllers
 
         public void Init(Factory factory)
         {
-            cannonBehavior.Init(factory);
+            moveBehavior = GetComponent<MoveBehavior>();
+            cannonBehavior = GetComponent<CannonBehavior>();
+            towerBehavior = GetComponent<TowerBehavior>();
+
             towerBehavior.Init(75);
+            cannonBehavior.Init(factory);
+
+            cannonBehavior.Setup(new SetupData(1, SetupType.Cannon, CannonType.FC, ""));
         }
 
         private void FixedUpdate()
