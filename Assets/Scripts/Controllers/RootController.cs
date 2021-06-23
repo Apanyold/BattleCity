@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Behaviors;
 using Didenko.BattleCity.Utils;
+using Didenko.BattleCity.MapScripts;
 
 namespace Didenko.BattleCity.Controllers
 {
@@ -14,21 +15,16 @@ namespace Didenko.BattleCity.Controllers
         private TextAsset gameData;
         [SerializeField]
         private BaseBehavior basePrefab;
+        [SerializeField]
+        private Map map;
 
         private Factory factory;
         private ConfigSetter configSetter;
 
-        [SerializeField]
-        private Vector2Int mapSize;
-        [SerializeField]
-        private Transform mapHodler;
-
-        private Map map;
 
         private void Awake()
         {
-            map = new Map(mapSize, mapHodler);
-            mapHodler.position = new Vector3(-mapSize.x, -mapSize.y, 0);
+            map.InitMap();
 
             configSetter = new ConfigSetter();
             configSetter.DownloadDatas(gameData);
@@ -40,9 +36,9 @@ namespace Didenko.BattleCity.Controllers
             var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
             player.AddComponent<PlayerTankController>().Init(factory);
 
-            //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
+            var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
 
-            //var redBase = Instantiate(basePrefab, transform.position + new Vector3(2, 2, 0), transform.rotation, objectPooler.GameZone);
+            var redBase = Instantiate(basePrefab, transform.position + new Vector3(2, 2, 0), transform.rotation, objectPooler.GameZone);
             //redBase.Init(factory, Team.Red);
         }
 
