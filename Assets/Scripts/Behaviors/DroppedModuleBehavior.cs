@@ -1,4 +1,5 @@
 ﻿using Didenko.BattleCity.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,15 +8,17 @@ namespace Didenko.BattleCity.Behaviors
 {
     public class DroppedModuleBehavior : SpriteLoader, IOnPoolReturn
     {
-        public DropData DropData => dropData;
+        //public DropData DropData => dropData;
 
         [SerializeField]
         private PoolObjBehavior poolObj;
         private DropData dropData;
 
+        private bool isDestroy = false;
+
         private void Awake()
         {
-            Init(Team.Blue, new DropData("PC3", 3));
+            //Init(Team.Blue, new DropData("PC3", 3, SetupType.Cannon));
         }
 
         public void Init(Team team, DropData data)
@@ -27,13 +30,14 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData PickUp()
         {
-            var data = new DropData(dropData.spriteName, dropData.lvl);
+            var data = new DropData(dropData.spriteName, dropData.lvl, dropData.setupType, dropData.cannonType);
             Destroy();
             return data;
         }
 
         public void Destroy()
         {
+            isDestroy = true;
             StopCoroutine(Rotate());
             poolObj.ReturnToPool();
         }
@@ -41,6 +45,7 @@ namespace Didenko.BattleCity.Behaviors
         public void OnReturnToPool()
         {
             dropData = new DropData();
+            isDestroy = false;
         }
 
         private IEnumerator Rotate()
@@ -55,12 +60,18 @@ namespace Didenko.BattleCity.Behaviors
         private void OnTriggerEnter2D(Collider2D collision)
         {
             Debug.Log("Entered trigger: " + collision.name);
-            collision.gameObject.GetComponents<ISetupable>();
+            if(collision.gameObject.TryGetComponent(out TankBehavior tankBehavior))
+            {
+                tankBehavior.OnDropEntered(this);
+            }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            
+            if (collision.gameObject.TryGetComponent(out TankBehavior tankBehavior))
+            {
+                tankBehavior.OnDropExited(this);
+            }
         }
     }
 }

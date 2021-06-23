@@ -20,16 +20,11 @@ namespace Didenko.BattleCity.Behaviors
 
         public DataType DataType => DataType.towerDatas;
 
-        public void Init(float penetrationChance)
-        {
-            cannonBehavior.OnFired += CalculateChance;
-        }
-
         public void CalculateChance(BulletBehavior bulletBehavior)
         {
             var chance = Random.Range(0, 100);
             bool isPenetrated = currentData.penetrationChance >= chance;
-            Debug.Log("isPenetrated" + isPenetrated);
+            //Debug.Log("isPenetrated" + isPenetrated);
             bulletBehavior.isPenetrated = isPenetrated;
         }
 
@@ -60,7 +55,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData DropModule()
         {
-            var data = new DropData(currentData.spriteName, currentData.lvl);
+            var data = new DropData(currentData.spriteName, currentData.lvl, SetupType.Tower, CannonType.None);
             return data;
         }
     }

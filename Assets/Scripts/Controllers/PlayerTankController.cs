@@ -4,26 +4,34 @@ using UnityEngine;
 using Didenko.BattleCity.Behaviors;
 using Didenko.BattleCity.Utils;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace Didenko.BattleCity.Controllers 
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerTankController : MonoBehaviour
     {
         private MoveBehavior moveBehavior;
         private CannonBehavior cannonBehavior;
-        private TowerBehavior towerBehavior;
+        private TankBehavior tankBehavior;
 
         private int 
             horizontal,
             vertical;
+        private bool canBePicked;
 
         public void Init(Factory factory)
         {
             moveBehavior = GetComponent<MoveBehavior>();
             cannonBehavior = GetComponent<CannonBehavior>();
-            towerBehavior = GetComponent<TowerBehavior>();
+            tankBehavior = GetComponent<TankBehavior>();
 
-            //cannonBehavior.Setup(new SetupData(1, SetupType.Cannon, CannonType.FC));
+            tankBehavior.CanBeCollected += UpdateDropState;
+
+        }
+
+        public void UpdateDropState(bool isCollectable)
+        {
+            canBePicked = isCollectable;
         }
 
         private void FixedUpdate()
@@ -44,8 +52,16 @@ namespace Didenko.BattleCity.Controllers
 
             if (Input.GetKeyDown(KeyCode.Space))
                 cannonBehavior.Fire();
+
             if(Input.GetKeyDown(KeyCode.R))
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+            if (Input.GetKeyDown(KeyCode.Z) && canBePicked)
+                tankBehavior.PickUp();
+            else if (Input.GetKeyDown(KeyCode.M) && canBePicked)
+                tankBehavior.DestroyDrop();
+
+            Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
         }
     }
 }

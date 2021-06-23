@@ -24,7 +24,7 @@ namespace Didenko.BattleCity.Behaviors
                 Debug.Log(health);
             }
         }
-        private int health = 10;
+        private int health;
 
         public void Init(int health)
         {

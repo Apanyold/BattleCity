@@ -149,4 +149,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPenetrated: 0
   moveBehavior: {fileID: 378378353507987524}
-  bulletSpeed: 5
+  bulletSpeed: 7

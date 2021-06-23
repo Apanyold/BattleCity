@@ -16,20 +16,17 @@ namespace Didenko.BattleCity.Behaviors
         private MoveBehavior moveBehavior;
 
         [SerializeField]
-        private float bulletSpeed = 5;
+        private float bulletSpeed;
+
         private int 
             damage,
             flyDistacne;
 
-        private float
-            timeToDestroy = 1f,
-            timeTicker;
         private Vector3 startPosition;
 
         private GameObject owner;
         public void Init(int damage, GameObject owner, int flyDistacne)
         {
-            timeTicker = Time.time;
             this.damage = damage;
             this.owner = owner;
             this.flyDistacne = flyDistacne;
@@ -43,7 +40,6 @@ namespace Didenko.BattleCity.Behaviors
         {
             owner = null;
             damage = 0;
-            timeTicker = 0f;
 
             StopCoroutine(StartMove());
         }
@@ -68,7 +64,7 @@ namespace Didenko.BattleCity.Behaviors
             {
                 if (isPenetrated && go.TryGetComponent(out AttackableBehavior attackableBehavior))
                     attackableBehavior.Health -= damage;
-
+                Debug.Log("Bullet entered: " + collision.name);
                 gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
             }
         }

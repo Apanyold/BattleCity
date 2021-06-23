@@ -8,8 +8,9 @@ namespace Didenko.BattleCity.Utils
 {
     public class ObjectPooler : MonoBehaviour
     {
+        public Transform GameZone => gameZone;
         [SerializeField]
-        private Transform gameZone;
+        public Transform gameZone;
 
         private Dictionary<PoolObject, Queue<GameObject>> PoolDictionary = new Dictionary<PoolObject, Queue<GameObject>>();
 
@@ -50,7 +51,7 @@ namespace Didenko.BattleCity.Utils
                 beh.returnToPoolCallback += ReturnToPool;
             }
 
-            gameObject.transform.parent = gameZone;
+            gameObject.transform.parent = GameZone;
 
             return gameObject;
         }

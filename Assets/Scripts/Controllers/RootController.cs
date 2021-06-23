@@ -12,12 +12,24 @@ namespace Didenko.BattleCity.Controllers
         private ObjectPooler objectPooler;
         [SerializeField]
         private TextAsset gameData;
+        [SerializeField]
+        private BaseBehavior basePrefab;
 
         private Factory factory;
         private ConfigSetter configSetter;
 
+        [SerializeField]
+        private Vector2Int mapSize;
+        [SerializeField]
+        private Transform mapHodler;
+
+        private Map map;
+
         private void Awake()
         {
+            map = new Map(mapSize, mapHodler);
+            mapHodler.position = new Vector3(-mapSize.x, -mapSize.y, 0);
+
             configSetter = new ConfigSetter();
             configSetter.DownloadDatas(gameData);
 
@@ -25,11 +37,13 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-            var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Blue);
+            var player = factory.CreateObject(PoolObject.Tank, transform.position, Team.Red);
+            player.AddComponent<PlayerTankController>().Init(factory);
 
             //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
 
-            player.AddComponent<PlayerController>().Init(factory);
+            //var redBase = Instantiate(basePrefab, transform.position + new Vector3(2, 2, 0), transform.rotation, objectPooler.GameZone);
+            //redBase.Init(factory, Team.Red);
         }
 
         private void Start()

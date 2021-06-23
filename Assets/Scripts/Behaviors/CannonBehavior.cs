@@ -67,7 +67,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData DropModule()
         {
-            var data = new DropData(currentData.spriteName, currentData.lvl);
+            var data = new DropData(currentData.spriteName, currentData.lvl, SetupType.Cannon, currentData.cannonType);
             return data;
         }
 

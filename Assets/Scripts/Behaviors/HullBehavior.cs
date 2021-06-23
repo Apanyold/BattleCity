@@ -22,7 +22,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData DropModule()
         {
-            return new DropData(currentData.spriteName, currentData.lvl);
+            return new DropData(currentData.spriteName, currentData.lvl, SetupType.Hull, CannonType.None);
         }
 
         public void InitSetup()
