@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
 using System;
+using Didenko.BattleCity.MapScripts;
 
 namespace Didenko.BattleCity.Behaviors
 {

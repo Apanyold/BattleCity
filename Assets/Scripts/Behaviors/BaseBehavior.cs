@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
+using Didenko.BattleCity.MapScripts;
 
 namespace Didenko.BattleCity.Behaviors
 {
@@ -23,7 +24,11 @@ namespace Didenko.BattleCity.Behaviors
 
         private List<TankBehavior> activeTanks = new List<TankBehavior>();
 
-        public void Init(Factory factory, Team team)
+        private Vector2Int[] spawnPoints;
+        private List<Vector2Int> availablePoints = new List<Vector2Int>();
+        private int pointTicker;
+
+        public void Init(Factory factory, Team team, Map map)
         {
             this.factory = factory;
             teamBehavior.SetTeam(team);
@@ -32,6 +37,19 @@ namespace Didenko.BattleCity.Behaviors
 
             attackableBehavior.Init(10);
 
+            spawnPoints = new Vector2Int[4];
+            spawnPoints[0] = new Vector2Int(0, 1);
+            spawnPoints[1] = new Vector2Int(0, -1);
+            spawnPoints[2] = new Vector2Int(1, 0);
+            spawnPoints[3] = new Vector2Int(-1, 0);
+
+            var baseCell = map.RealPosToCell(transform.position);
+            foreach (var item in spawnPoints)
+            {
+                if (map.CheckPosition(baseCell + item))
+                    availablePoints.Add(item);
+            }
+            pointTicker = 0;
             TryCreateTanks();
         }
 
@@ -40,17 +58,26 @@ namespace Didenko.BattleCity.Behaviors
             if (activeTanks.Count >= maxAliveTanks || tankCreationLimit <= 0) 
                 return;
 
-            var tank = factory.CreateObject(PoolObject.Tank, transform.position + transform.up*2, teamBehavior.Team).GetComponent<TankBehavior>();
+            pointTicker = pointTicker < availablePoints.Count - 1 ? pointTicker += 1: 0;
+            try
+            {
+                var pos = new Vector3(availablePoints[pointTicker].x * 2, availablePoints[pointTicker].y * 2, transform.position.z);
+                var tank = factory.CreateObject(PoolObject.Tank, transform.position + pos, teamBehavior.Team).GetComponent<TankBehavior>();
 
-            tank.OnPullReturned += OnTankCollectionChanged;
-            activeTanks.Add(tank);
+                tank.OnPullReturned += OnTankCollectionChanged;
+                activeTanks.Add(tank);
 
-            tankCreationLimit--;
+                tankCreationLimit--;
 
-            Debug.Log("tankCreationLimit: " + tankCreationLimit);
+                if (activeTanks.Count < maxAliveTanks)
+                    TryCreateTanks();
+            }
+            catch
+            {
 
-            if (activeTanks.Count < maxAliveTanks)
-                TryCreateTanks();
+            }
+            
+
         }
 
         private void OnTankCollectionChanged(TankBehavior tankBehavior)

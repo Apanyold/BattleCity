@@ -44,7 +44,7 @@ namespace Didenko.BattleCity.Behaviors
             damage = currentData.damage;
             flyDisnatce = currentData.flyDisnatce;
 
-            Debug.Log($"Cannon {currentData.spriteName}, {teamBehavior.Team}");
+            //Debug.Log($"Cannon {currentData.spriteName}, {teamBehavior.Team}");
             LoadSpriteForTeam(currentData.spriteName, teamBehavior.Team);
         }
 

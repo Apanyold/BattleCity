@@ -13,7 +13,7 @@ namespace Didenko.BattleCity.Utils
             string path = team.ToString() + "/" + spriteName;
             spriteRenderer.sprite =  LoadSprite(path);
 
-            Debug.Log(spriteName + " for team: " + team);
+            //Debug.Log(spriteName + " for team: " + team);
         }
 
         protected Sprite LoadSprite(string spriteName)

@@ -456,6 +456,7 @@ MonoBehaviour:
   basePrefab: {fileID: 2947992377440831301, guid: c775e6e4650cedf41996a609b58c0ed6,
     type: 3}
   map: {fileID: 998664691}
+  mapHolder: {fileID: 907178103}
 --- !u!4 &998664690
 Transform:
   m_ObjectHideFlags: 0
