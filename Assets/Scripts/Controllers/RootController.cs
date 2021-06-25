@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using Didenko.BattleCity.Ai;
 
 namespace Didenko.BattleCity.Controllers
 {
@@ -25,6 +26,10 @@ namespace Didenko.BattleCity.Controllers
         private Map map;
         [SerializeField]
         private Transform mapHolder;
+        [SerializeField]
+        private PlayerController playerController;
+        [SerializeField]
+        private AiController aiController;
 
         private Factory factory;
         private ConfigSetter configSetter;
@@ -46,7 +51,7 @@ namespace Didenko.BattleCity.Controllers
             unityThread = Thread.CurrentThread.ManagedThreadId;
             unityTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            marker = Resources.Load<Behaviors.MapObjectBehavior>("Prefabs/MarkerBlue");
+            marker = Resources.Load<MapObjectBehavior>("Prefabs/MarkerBlue");
 
             map.InitMap();
             pathfinder = new Pathfinder(map);
@@ -58,11 +63,12 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-            var player = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(40,40,0), Team.Red);
-            player.AddComponent<PlayerTankController>().Init(factory);
+            var playerTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(38,38,0), Team.Red).GetComponent<TankBehavior>();
+            playerController.SetTank(playerTank);
 
-            var redBase = Instantiate(basePrefab, transform.position + new Vector3(42, 42, 0), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
-            redBase.Init(factory, Team.Red, map);
+
+            //var redBase = Instantiate(basePrefab, transform.position + new Vector3(42, 42, 0), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
+            //redBase.Init(factory, Team.Red, map);
 
             //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
 
@@ -82,7 +88,14 @@ namespace Didenko.BattleCity.Controllers
             //    }
         }
 
-        private async void PlaceBases()
+        private void Start()
+        {
+            var enemyTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(40, 40, 0), Team.Blue).GetComponent<TankBehavior>();
+            aiController.SetTank(enemyTank, pathfinder, map);
+
+        }
+
+        private void PlaceBases()
         {
             var vector2Ints = map.GetBasePositions();
 
@@ -91,10 +104,12 @@ namespace Didenko.BattleCity.Controllers
 
             stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            await Task.Run(() => pathfinder.FidnPath(selectedRed, selectedBlue)).ContinueWith(value =>
-            {
-                OnPathBuilded?.Invoke(value.Result);
-            }, unityTaskScheduler);
+
+            pathfinder.FidnPathAsync(selectedBlue, selectedRed, OnPathEnded);
+            //await Task.Run(() => pathfinder.FidnPath(selectedRed, selectedBlue)).ContinueWith(value =>
+            //{
+            //    OnPathBuilded?.Invoke(value.Result);
+            //}, unityTaskScheduler);
         }
 
         private void OnPathEnded(Stack<Vector2Int> path)
@@ -104,20 +119,20 @@ namespace Didenko.BattleCity.Controllers
 
             if (path == null)
             {
-                Debug.Log("Reload");
+                Debug.Log("Path between bases is null, reloading scene");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                return;
             }
+            //foreach (var item in path)
+            //{
+            //    Instantiate(marker, new Vector3(item.x * 2, item.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder);
+            //}
 
-            var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x * 2, selectedRed.y * 2, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
-            redBase.Init(factory, Team.Red, map);
+            //var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x * 2, selectedRed.y * 2, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
+            //redBase.Init(factory, Team.Red, map);
 
-            var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x * 2, selectedBlue.y * 2, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
-            blueBase.Init(factory, Team.Blue, map);
-        }
-
-        private void Start()
-        {
-
+            //var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x * 2, selectedBlue.y * 2, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
+            //blueBase.Init(factory, Team.Blue, map);
         }
     }
 }

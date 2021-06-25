@@ -8,7 +8,7 @@ namespace Didenko.BattleCity.Behaviors
 {
     public class BaseBehavior : SpriteLoader
     {
-        //TODO let base find free positions
+        public List<TankBehavior> ActiveTanks => activeTanks;
 
         [SerializeField]
         private AttackableBehavior attackableBehavior;
@@ -35,7 +35,7 @@ namespace Didenko.BattleCity.Behaviors
 
             LoadSpriteForTeam("Flag" , teamBehavior.Team);
 
-            attackableBehavior.Init(10);
+            attackableBehavior.Init(20);
 
             spawnPoints = new Vector2Int[4];
             spawnPoints[0] = new Vector2Int(0, 1);
@@ -57,27 +57,21 @@ namespace Didenko.BattleCity.Behaviors
         {
             if (activeTanks.Count >= maxAliveTanks || tankCreationLimit <= 0) 
                 return;
+            if (availablePoints.Count == 0)
+                return;
 
             pointTicker = pointTicker < availablePoints.Count - 1 ? pointTicker += 1: 0;
-            try
-            {
-                var pos = new Vector3(availablePoints[pointTicker].x * 2, availablePoints[pointTicker].y * 2, transform.position.z);
-                var tank = factory.CreateObject(PoolObject.Tank, transform.position + pos, teamBehavior.Team).GetComponent<TankBehavior>();
 
-                tank.OnPullReturned += OnTankCollectionChanged;
-                activeTanks.Add(tank);
+            var pos = new Vector3(availablePoints[pointTicker].x * 2, availablePoints[pointTicker].y * 2, transform.position.z);
+            var tank = factory.CreateObject(PoolObject.Tank, transform.position + pos, teamBehavior.Team).GetComponent<TankBehavior>();
 
-                tankCreationLimit--;
+            tank.OnPullReturned += OnTankCollectionChanged;
+            activeTanks.Add(tank);
 
-                if (activeTanks.Count < maxAliveTanks)
-                    TryCreateTanks();
-            }
-            catch
-            {
+            tankCreationLimit--;
 
-            }
-            
-
+            if (activeTanks.Count < maxAliveTanks)
+                TryCreateTanks();
         }
 
         private void OnTankCollectionChanged(TankBehavior tankBehavior)

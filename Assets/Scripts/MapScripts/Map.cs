@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Behaviors;
+using System;
+using Random = UnityEngine.Random;
 
 namespace Didenko.BattleCity.MapScripts
 {
@@ -33,7 +35,7 @@ namespace Didenko.BattleCity.MapScripts
             mapCells = new Vector2Int[mapSize.x, mapSize.y];
 
             wallsMaxCount = mapSize.x * mapSize.y / 2;
-            wallCreationChance = (int)(wallsMaxCount * 0.1f);
+            wallCreationChance = (int)(wallsMaxCount * 0.2f);
 
             for (int i = 0; i < mapSize.x; i++)
             {
@@ -44,7 +46,7 @@ namespace Didenko.BattleCity.MapScripts
             }
 
             GenerateMap();
-            GenerateWalls();
+            //GenerateWalls();
             marker = Resources.Load<Behaviors.MapObjectBehavior>("Prefabs/MarkerRed");
             //mapHolder.position = new Vector3(-mapSize.x, -mapSize.y, 0);
         }
@@ -118,7 +120,59 @@ namespace Didenko.BattleCity.MapScripts
 
         public Vector2Int RealPosToCell(Vector3 vector3)
         {
-            return new Vector2Int((int)vector3.x/2, (int)vector3.y/2);
+            int x = (int)vector3.x;
+            int y = (int)vector3.y;
+
+            Vector2Int vector2Int = new Vector2Int(0,0);
+
+            if(x % 2 == 0)
+            {
+
+            }
+
+            //var x = Math.Round(vector3.x/2,1);
+            //var y = Math.Round(vector3.y/2,1);
+
+            //int xI = (int)Math.Round(vector3.x / 2, 1);
+            //int yI = (int)Math.Round(vector3.y / 2, 1);
+
+            //var xF = x - xI;
+            //if (xF > 0.0)
+            //    xR = (int)(x - xF);
+            //else
+            //    xR = (int)xF;
+
+            //var yF = y - yI;
+            //if (yF > 0.0)
+            //    yR = (int)(y - yF);
+            //else
+            //    yR = (int)yF;
+
+
+
+
+            //float xF = vector3.x/2f;
+            //float yF = vector3.y/2f;
+
+            //x = Mathf.FloorToInt(xF);
+            //y = Mathf.FloorToInt(yF);
+
+            //if (xF - x > 0.5f)
+            //    x = Mathf.FloorToInt(vector3.x / 2);
+            //    x = Mathf.CeilToInt(xF);
+            //else
+            //    ;//x = (int)Math.Truncate(xF);
+
+            //if (yF - y > 0.5f)
+            //    y = Mathf.FloorToInt(vector3.y / 2);
+            //    y = Mathf.CeilToInt(yF);
+            //else
+            //    ;//y = (int)Math.Truncate(yF);
+            //Mathf.CeilToInt
+            //Vector3Int.FloorToInt
+            //Debug.Log($"Rounded ({x},{y}) ({vector3.x},{vector3.y}), ({vector3.x / 2},{vector3.y / 2})");
+            //return new Vector2Int(Mathf.FloorToInt(vector3.x/2), Mathf.FloorToInt(vector3.y/2));
+            return new Vector2Int(x, y);
         }
 
         public bool IsInsideMap(Vector2Int position)

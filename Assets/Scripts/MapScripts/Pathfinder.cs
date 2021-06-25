@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using Didenko.BattleCity.Controllers;
 
 namespace Didenko.BattleCity.MapScripts
 {
@@ -48,7 +50,7 @@ namespace Didenko.BattleCity.MapScripts
             //TODO iterationLimit;
             while (openedList.Count > 0 && iterationLimit > 0)
             {
-                if (iterationLimit <= 1)
+                if (iterationLimit <= 2)
                     Debug.Log("Iteration limit reached ");
 
                 iterationLimit--;
@@ -84,6 +86,14 @@ namespace Didenko.BattleCity.MapScripts
             }
 
             return null;
+        }
+
+        public async void FidnPathAsync(Vector2Int startPosition, Vector2Int endposition, Action<Stack<Vector2Int>> callback)
+        {
+            await Task.Run(() => FidnPath(startPosition, endposition)).ContinueWith(value =>
+            {
+                callback?.Invoke(value.Result);
+            },  RootController.unityTaskScheduler);
         }
 
         public Stack<Vector2Int> GetPath(Node node)

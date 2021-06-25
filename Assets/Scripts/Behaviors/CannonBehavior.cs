@@ -13,7 +13,8 @@ namespace Didenko.BattleCity.Behaviors
     public class CannonBehavior : SpriteLoader, IConfigurable, ISetupable, IModuleDrop
     {
         public event Action<BulletBehavior> OnFired;
-        public int Damage => damage;
+
+        public int BulletFlyDistance => currentData.flyDisnatce;
 
         public DataType DataType => DataType.cannonDatas;
 

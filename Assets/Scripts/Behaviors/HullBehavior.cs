@@ -43,7 +43,7 @@ namespace Didenko.BattleCity.Behaviors
             currentData = hullDatas.Find(x => x.lvl == setupData.lvl);
 
             attackableBehavior.Init(currentData.health);
-            moveBehavior.Speed = currentData.moveSpeed;
+            moveBehavior.Speed = hullDatas[0].moveSpeed;
 
             LoadSpriteForTeam(currentData.spriteName, teamBehavior.Team);
         }

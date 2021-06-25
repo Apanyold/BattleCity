@@ -8,8 +8,10 @@ using System;
 
 namespace Didenko.BattleCity.Controllers 
 {
-    public class PlayerTankController : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
+        public Action OnPlayerTankDestroyed;
+
         private MoveBehavior moveBehavior;
         private CannonBehavior cannonBehavior;
         private TankBehavior tankBehavior;
@@ -19,23 +21,34 @@ namespace Didenko.BattleCity.Controllers
             vertical;
         private bool canBePicked;
 
-        public void Init(Factory factory)
+        public void SetTank(TankBehavior tankBehavior)
         {
-            moveBehavior = GetComponent<MoveBehavior>();
-            cannonBehavior = GetComponent<CannonBehavior>();
-            tankBehavior = GetComponent<TankBehavior>();
+            moveBehavior = tankBehavior.GetComponent<MoveBehavior>();
+            cannonBehavior = tankBehavior.GetComponent<CannonBehavior>();
+            this.tankBehavior = tankBehavior;
 
-            tankBehavior.CanBeCollected += UpdateDropState;
-
+            this.tankBehavior.CanBeCollected += UpdateDropState;
+            this.tankBehavior.OnPullReturned += OnTankPoolReturned;
         }
 
-        public void UpdateDropState(bool isCollectable)
+        public void OnTankPoolReturned(TankBehavior tankBehavior)
+        {
+            tankBehavior.CanBeCollected -= UpdateDropState;
+            tankBehavior.OnPullReturned -= OnTankPoolReturned;
+
+            OnPlayerTankDestroyed?.Invoke();
+        }
+
+        public void UpdateDropState(bool isCollectable, DroppedModuleBehavior droppedModuleBehavior)
         {
             canBePicked = isCollectable;
         }
 
         private void FixedUpdate()
         {
+            if (!tankBehavior)
+                return;
+
             if (moveBehavior.IsMoving)
                 return;
 
@@ -50,6 +63,9 @@ namespace Didenko.BattleCity.Controllers
             horizontal = (int)Input.GetAxisRaw("Horizontal");
             vertical = (int)Input.GetAxisRaw("Vertical");
 
+            if (!tankBehavior)
+                return;
+
             if (Input.GetKeyDown(KeyCode.Space))
                 cannonBehavior.Fire();
 
@@ -61,7 +77,7 @@ namespace Didenko.BattleCity.Controllers
             else if (Input.GetKeyDown(KeyCode.M) && canBePicked)
                 tankBehavior.DestroyDrop();
 
-            Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
+            Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
         }
     }
 }

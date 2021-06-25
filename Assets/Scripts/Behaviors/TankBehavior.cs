@@ -12,7 +12,7 @@ namespace Didenko.BattleCity.Behaviors
         public Action<TankBehavior> OnPullReturned;
         public Action<DroppedModuleBehavior> DropExited;
         public Action<DroppedModuleBehavior> DropEntered;
-        public Action<bool> CanBeCollected;
+        public Action<bool, DroppedModuleBehavior> CanBeCollected;
 
         [SerializeField]
         private CannonBehavior cannonBehavior;
@@ -39,6 +39,8 @@ namespace Didenko.BattleCity.Behaviors
             var componets = gameObject.GetComponents<ISetupable>();
             foreach (var item in componets)
                 item.InitSetup();
+
+            StartCoroutine(CheckFireDistance());
         }
 
         public void SetupPickedModule(DropData dropData)
@@ -72,18 +74,45 @@ namespace Didenko.BattleCity.Behaviors
         public void OnDropEntered(DroppedModuleBehavior droppedModuleBehavior)
         {
             this.droppedModuleBehavior = droppedModuleBehavior;
-            CanBeCollected?.Invoke(true);
+            CanBeCollected?.Invoke(true, droppedModuleBehavior);
         }
 
         public void OnDropExited(DroppedModuleBehavior droppedModuleBehavior)
         {
             this.droppedModuleBehavior = null;
-            CanBeCollected?.Invoke(false);
+            CanBeCollected?.Invoke(false, droppedModuleBehavior);
         }
 
         public void OnReturnToPool()
         {
+            StopCoroutine(CheckFireDistance());
             OnPullReturned?.Invoke(this);
+        }
+
+        private IEnumerator CheckFireDistance()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(0.1f);
+
+                RaycastHit2D[] result = new RaycastHit2D[5];
+                ContactFilter2D filter = new ContactFilter2D();
+
+                int count = Physics2D.Raycast(transform.position, transform.up, filter, result, cannonBehavior.BulletFlyDistance * 3f);
+
+                //for (int i = 0; i < count; i++)
+                if(result.Length > 1)
+                {
+                    var hit = result[1];
+
+                    if (!hit || hit.collider == null || hit.collider.gameObject == this.gameObject || hit.collider.gameObject == null)
+                        continue;
+                    if (!hit.collider.gameObject.TryGetComponent(out AttackableBehavior attackableBehavior))
+                        continue;
+
+                    Debug.DrawLine(transform.position, hit.transform.position, Color.red, 0.1f);
+                }
+            }
         }
     }
 }
