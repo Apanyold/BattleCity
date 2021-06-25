@@ -63,9 +63,20 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-            var playerTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(38,38,0), Team.Red).GetComponent<TankBehavior>();
+
+            var vector2Ints = map.GetBasePositions();
+
+            selectedRed = vector2Ints[0][UnityEngine.Random.Range(0, vector2Ints[0].Count)];
+            selectedBlue = vector2Ints[1][UnityEngine.Random.Range(0, vector2Ints[1].Count)];
+
+            var playerTank = factory.CreateObject(PoolObject.Tank, new Vector3(selectedRed.x, selectedRed.y, 0), Team.Red).GetComponent<TankBehavior>();
+            playerTank.gameObject.GetComponent<HullBehavior>().Setup(new SetupData(1,SetupType.Hull, CannonType.None));
             playerController.SetTank(playerTank);
 
+            var enemyTank = factory.CreateObject(PoolObject.Tank, new Vector3(selectedBlue.x, selectedBlue.y, 0), Team.Blue).GetComponent<TankBehavior>();
+            aiController.SetTank(enemyTank, pathfinder, map);
+
+            aiController.SetTarget(playerTank.gameObject);
 
             //var redBase = Instantiate(basePrefab, transform.position + new Vector3(42, 42, 0), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
             //redBase.Init(factory, Team.Red, map);
@@ -73,7 +84,7 @@ namespace Didenko.BattleCity.Controllers
             //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
 
             OnPathBuilded += OnPathEnded;
-            PlaceBases();
+            //PlaceBases();
 
             //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             //stopwatch.Start();
@@ -90,18 +101,11 @@ namespace Didenko.BattleCity.Controllers
 
         private void Start()
         {
-            var enemyTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(40, 40, 0), Team.Blue).GetComponent<TankBehavior>();
-            aiController.SetTank(enemyTank, pathfinder, map);
 
         }
 
         private void PlaceBases()
         {
-            var vector2Ints = map.GetBasePositions();
-
-            selectedRed = vector2Ints[0][UnityEngine.Random.Range(0, vector2Ints[0].Count)];
-            selectedBlue = vector2Ints[1][UnityEngine.Random.Range(0, vector2Ints[1].Count)];
-
             stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
@@ -123,16 +127,16 @@ namespace Didenko.BattleCity.Controllers
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 return;
             }
-            //foreach (var item in path)
-            //{
-            //    Instantiate(marker, new Vector3(item.x * 2, item.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder);
-            //}
+            foreach (var item in path)
+            {
+                Instantiate(marker, new Vector3(item.x, item.y, 0), new Quaternion(0, 0, 0, 0), mapHolder);
+            }
 
-            //var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x * 2, selectedRed.y * 2, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
-            //redBase.Init(factory, Team.Red, map);
+            var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x, selectedRed.y, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
+            redBase.Init(factory, Team.Red, map);
 
-            //var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x * 2, selectedBlue.y * 2, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
-            //blueBase.Init(factory, Team.Blue, map);
+            var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x, selectedBlue.y, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
+            blueBase.Init(factory, Team.Blue, map);
         }
     }
 }

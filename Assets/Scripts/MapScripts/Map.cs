@@ -9,8 +9,9 @@ namespace Didenko.BattleCity.MapScripts
 {
     public class Map : MonoBehaviour
     {
-        public int Size => mapSize.x * mapSize.y;
+        public static int MapCellSize = 2;
 
+        public int Size => mapSize.x * mapSize.y;
         [SerializeField]
         private Vector2Int mapSize;
         [SerializeField]
@@ -41,14 +42,13 @@ namespace Didenko.BattleCity.MapScripts
             {
                 for (int j = 0; j < mapSize.y; j++)
                 {
-                    mapCells[i, j] = new Vector2Int(i, j);
+                    mapCells[i, j] = new Vector2Int(i* MapCellSize, j* MapCellSize);
                 }
             }
 
             GenerateMap();
-            //GenerateWalls();
+            GenerateWalls();
             marker = Resources.Load<Behaviors.MapObjectBehavior>("Prefabs/MarkerRed");
-            //mapHolder.position = new Vector3(-mapSize.x, -mapSize.y, 0);
         }
 
         public void CreateMapObj(MapObjectBehavior mapObj, Vector2Int position, CellType cellType)
@@ -57,7 +57,7 @@ namespace Didenko.BattleCity.MapScripts
             if (newPositions.Length != mapObj.SizeInfo.Length)
                 return;
 
-            var obj = Instantiate(mapObj, new Vector3(position.x * 2, position.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder);
+            var obj = Instantiate(mapObj, new Vector3(position.x, position.y, 0), new Quaternion(0, 0, 0, 0), mapHolder);
             obj.PositionsOccupied = newPositions;
         }
 
@@ -120,66 +120,27 @@ namespace Didenko.BattleCity.MapScripts
 
         public Vector2Int RealPosToCell(Vector3 vector3)
         {
-            int x = (int)vector3.x;
-            int y = (int)vector3.y;
+            int x;
+            int y;
 
-            Vector2Int vector2Int = new Vector2Int(0,0);
+            if (Mathf.CeilToInt(vector3.x) % 2 == 0)
+                x = Mathf.CeilToInt(vector3.x);
+            else
+                x = Mathf.FloorToInt(vector3.x);
 
-            if(x % 2 == 0)
-            {
+            if (Mathf.CeilToInt(vector3.y) % 2 == 0)
+                y = Mathf.CeilToInt(vector3.y);
+            else
+                y = Mathf.FloorToInt(vector3.y);
 
-            }
-
-            //var x = Math.Round(vector3.x/2,1);
-            //var y = Math.Round(vector3.y/2,1);
-
-            //int xI = (int)Math.Round(vector3.x / 2, 1);
-            //int yI = (int)Math.Round(vector3.y / 2, 1);
-
-            //var xF = x - xI;
-            //if (xF > 0.0)
-            //    xR = (int)(x - xF);
-            //else
-            //    xR = (int)xF;
-
-            //var yF = y - yI;
-            //if (yF > 0.0)
-            //    yR = (int)(y - yF);
-            //else
-            //    yR = (int)yF;
-
-
-
-
-            //float xF = vector3.x/2f;
-            //float yF = vector3.y/2f;
-
-            //x = Mathf.FloorToInt(xF);
-            //y = Mathf.FloorToInt(yF);
-
-            //if (xF - x > 0.5f)
-            //    x = Mathf.FloorToInt(vector3.x / 2);
-            //    x = Mathf.CeilToInt(xF);
-            //else
-            //    ;//x = (int)Math.Truncate(xF);
-
-            //if (yF - y > 0.5f)
-            //    y = Mathf.FloorToInt(vector3.y / 2);
-            //    y = Mathf.CeilToInt(yF);
-            //else
-            //    ;//y = (int)Math.Truncate(yF);
-            //Mathf.CeilToInt
-            //Vector3Int.FloorToInt
-            //Debug.Log($"Rounded ({x},{y}) ({vector3.x},{vector3.y}), ({vector3.x / 2},{vector3.y / 2})");
-            //return new Vector2Int(Mathf.FloorToInt(vector3.x/2), Mathf.FloorToInt(vector3.y/2));
             return new Vector2Int(x, y);
         }
 
         public bool IsInsideMap(Vector2Int position)
         {
-            if (position.x > mapSize.x|| position.x < 0)
+            if (position.x > mapSize.x * MapCellSize|| position.x < 0)
                 return false;
-            if (position.y > mapSize.y|| position.y < 0)
+            if (position.y > mapSize.y * MapCellSize|| position.y < 0)
                 return false;
 
             return true;
@@ -202,15 +163,15 @@ namespace Didenko.BattleCity.MapScripts
             vector2Ints.Add(new List<Vector2Int>()); 
             vector2Ints.Add(new List<Vector2Int>());
 
-            for (int i = 1; i < mapSize.x -1; i++)
+            for (int i = Map.MapCellSize; i < mapSize.x - Map.MapCellSize; i++)
             {
-                var pos = new Vector2Int(i, mapSize.y - 2);
+                var pos = new Vector2Int(i * MapCellSize, MapCellSize* mapSize.y - MapCellSize - MapCellSize);
                 if (CheckPosition(pos))
                     vector2Ints[0].Add(pos);
             }
-            for (int i = 1; i < mapSize.x - 1; i++)
+            for (int i = Map.MapCellSize; i < mapSize.x - Map.MapCellSize; i++)
             {
-                var pos = new Vector2Int(i, 1);
+                var pos = new Vector2Int(i* MapCellSize, MapCellSize);
                 if (CheckPosition(pos))
                     vector2Ints[1].Add(pos);
             }
@@ -221,20 +182,22 @@ namespace Didenko.BattleCity.MapScripts
         {
             foreach (var item in mapCells)
             {
-                Instantiate(groundGo, new Vector3(item.x * 2, item.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder);
+                Instantiate(groundGo, new Vector3(item.x, item.y, 0), new Quaternion(0, 0, 0, 0), mapHolder);
 
-                if (item.x == mapCells.GetLength(0) - 1 || item.x == 0)
+                if (item.x == mapCells.GetLength(0) * MapCellSize - MapCellSize || item.x == 0)
+                {
                     CreateMapObj(mapObjectBehaviors[0], item, CellType.Wall);
-                else if (item.y == mapCells.GetLength(0) - 1 || item.y == 0)
+                }
+                else if (item.y == mapCells.GetLength(0) * MapCellSize - MapCellSize || item.y == 0)
                     CreateMapObj(mapObjectBehaviors[1], item, CellType.Wall);
             }
         }
 
         private void GenerateWalls()
         {
-            for (int i = 1; i < mapCells.GetLength(0)-1; i++)
+            for (int i = 0; i < mapCells.GetLength(0)*2-1; i+=2)
             {
-                for (int j = 1; j < mapCells.GetLength(1) - 1; j++)
+                for (int j = 0; j < mapCells.GetLength(1)*2 - 1; j+=2)
                 {
                     if (wallCreationChance < Random.Range(0, wallsMaxCount))
                             continue;

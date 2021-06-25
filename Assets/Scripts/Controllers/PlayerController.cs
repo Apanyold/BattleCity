@@ -77,7 +77,7 @@ namespace Didenko.BattleCity.Controllers
             else if (Input.GetKeyDown(KeyCode.M) && canBePicked)
                 tankBehavior.DestroyDrop();
 
-            Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
+            //Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
         }
     }
 }

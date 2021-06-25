@@ -17,7 +17,7 @@ namespace Didenko.BattleCity.Ai
         private MoveBehavior moveBehavior;
         private CannonBehavior cannonBehavior;
         private TankBehavior tankBehavior;
-        private AttackableBehavior target;
+        private GameObject target;
         private Pathfinder pathfinder;
         private Map map;
 
@@ -33,36 +33,27 @@ namespace Didenko.BattleCity.Ai
             this.tankBehavior = tankBehavior;
             this.pathfinder = pathfinder;
             this.map = map;
-
-            SetAiTarget(null);
         }
 
-        public void SetAiTarget(AttackableBehavior attackableBehavior)
+        public void SetTarget(GameObject target)
         {
-            //target = attackableBehavior;
-
-            var pos = map.RealPosToCell(tankBehavior.transform.position);
-            pathfinder.FidnPathAsync(pos, new Vector2Int(Random.Range(0,40), Random.Range(0, 40)), BluildRoute);
-            //pathfinder.FidnPathAsync(pos, new Vector2Int(19, 21), BluildRoute);
+            this.target = target;
+            StartCoroutine(FindPath());
         }
 
         public void BluildRoute(Stack<Vector2Int> path)
         {
+            StopCoroutine(MoveToPosition(Vector2Int.zero));
             movePath = path;
-            Debug.Log(path.Count);
-            var currentPos = map.RealPosToCell(tankBehavior.transform.position);
 
-            //if (currentPos == path.Pop())
-            //{
-            //    //BluildRoute(path);
-            //    //return;
-            //}
+            var currentPos = map.RealPosToCell(tankBehavior.transform.position);
 
             foreach (var item in path)
             {
-                var mar = Instantiate(marker, new Vector3(item.x * 2, item.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder.transform);
-                //Destroy(mar, 1f);
+                var mar = Instantiate(marker, new Vector3(item.x, item.y, 0), new Quaternion(0, 0, 0, 0), mapHolder.transform);
+                Destroy(mar, 1f);
             }
+
             MoveNext();
         }
 
@@ -74,9 +65,21 @@ namespace Didenko.BattleCity.Ai
             var pop = movePath.Peek();
             StartCoroutine(MoveToPosition(pop));
         }
+
+        public IEnumerator FindPath()
+        {
+            while (target != null && tankBehavior != null)
+            {
+                var pos = map.RealPosToCell(tankBehavior.transform.position);
+                var targetPos = map.RealPosToCell(target.transform.position);
+
+                pathfinder.FidnPathAsync(pos, targetPos, BluildRoute);
+                yield return new WaitForSeconds(5);
+            }
+        }
+
         public IEnumerator MoveToPosition(Vector2Int position)
         {
-            currentPos = map.RealPosToCell(tankBehavior.transform.position);
             while (currentPos != position)
             {
                 ChoseDirection(position);
@@ -91,31 +94,46 @@ namespace Didenko.BattleCity.Ai
                 }
                 yield return new WaitForEndOfFrame();
             }
-            var mar = Instantiate(markerRed, new Vector3(position.x * 2, position.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder.transform);
-            movePath.Pop();
-            MoveNext();
+            var mar = Instantiate(markerRed, new Vector3(position.x, position.y, 0), new Quaternion(0, 0, 0, 0), mapHolder.transform);
+            Destroy(mar, 1f);
+
+            if (movePath != null && movePath.Count >0)
+            {
+                movePath.Pop();
+                MoveNext();
+            }
         }
 
         private void ChoseDirection(Vector2Int position)
         {
-            currentPos = map.RealPosToCell(tankBehavior.transform.position);
+            int x = 0, y = 0;
+            float xC = tankBehavior.transform.position.x;
+            float yC = tankBehavior.transform.position.y;
 
-            if(position.x < currentPos.x)
+            x = (int)xC;
+            y = (int)yC;
+
+            if (position.x < currentPos.x)
             {
                 moveDirection = MoveDirection.Left;
+                x = Mathf.CeilToInt(xC);
             }
             else if(position.x > currentPos.x)
             {
                 moveDirection = MoveDirection.Right;
+                x = Mathf.FloorToInt(xC);
             }
             else if(position.y < currentPos.y)
             {
                 moveDirection = MoveDirection.Down;
+                y = Mathf.CeilToInt(yC);
             }
             else if (position.y > currentPos.y)
             {
                 moveDirection = MoveDirection.Up;
+                y = Mathf.FloorToInt(yC);
             }
+            currentPos = new Vector2Int(x, y);
         }
     }
 

@@ -38,10 +38,10 @@ namespace Didenko.BattleCity.Behaviors
             attackableBehavior.Init(20);
 
             spawnPoints = new Vector2Int[4];
-            spawnPoints[0] = new Vector2Int(0, 1);
-            spawnPoints[1] = new Vector2Int(0, -1);
-            spawnPoints[2] = new Vector2Int(1, 0);
-            spawnPoints[3] = new Vector2Int(-1, 0);
+            spawnPoints[0] = new Vector2Int(0, Map.MapCellSize);
+            spawnPoints[1] = new Vector2Int(0, -Map.MapCellSize);
+            spawnPoints[2] = new Vector2Int(Map.MapCellSize, 0);
+            spawnPoints[3] = new Vector2Int(-Map.MapCellSize, 0);
 
             var baseCell = map.RealPosToCell(transform.position);
             foreach (var item in spawnPoints)
@@ -62,7 +62,7 @@ namespace Didenko.BattleCity.Behaviors
 
             pointTicker = pointTicker < availablePoints.Count - 1 ? pointTicker += 1: 0;
 
-            var pos = new Vector3(availablePoints[pointTicker].x * 2, availablePoints[pointTicker].y * 2, transform.position.z);
+            var pos = new Vector3(availablePoints[pointTicker].x, availablePoints[pointTicker].y, transform.position.z);
             var tank = factory.CreateObject(PoolObject.Tank, transform.position + pos, teamBehavior.Team).GetComponent<TankBehavior>();
 
             tank.OnPullReturned += OnTankCollectionChanged;

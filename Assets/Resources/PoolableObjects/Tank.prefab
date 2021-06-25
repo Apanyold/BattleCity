@@ -120,7 +120,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4524924082328152261}
-  - component: {fileID: 4524924082328152262}
   - component: {fileID: 4524924082328152283}
   - component: {fileID: 4524924082328152281}
   - component: {fileID: 4524924082328152263}
@@ -130,6 +129,7 @@ GameObject:
   - component: {fileID: 4524924082328152256}
   - component: {fileID: -146491091887677296}
   - component: {fileID: 7752965496635653476}
+  - component: {fileID: 731906188596781749}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -152,32 +152,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &4524924082328152262
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4524924082328152286}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.010332465, y: -0.015740812}
-  m_SpriteTilingProperty:
-    border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.16, y: 0.16}
-    newSize: {x: 0.16, y: 0.16}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.2818246, y: 1.6495252}
-  m_EdgeRadius: 0
 --- !u!50 &4524924082328152283
 Rigidbody2D:
   serializedVersion: 4
@@ -314,6 +288,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamBehavior: {fileID: 4524924082328152263}
+--- !u!58 &731906188596781749
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4524924082328152286}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.61
 --- !u!1 &4524924082842635917
 GameObject:
   m_ObjectHideFlags: 0

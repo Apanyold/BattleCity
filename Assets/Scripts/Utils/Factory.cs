@@ -30,8 +30,7 @@ namespace Didenko.BattleCity.Utils
 
             if (gameObject.TryGetComponent(out TankBehavior tankBehavior))
                 ConfigTank(tankBehavior);
-                
-
+            
             return gameObject;
         }
 

@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizeInfo:
   - {x: 0, y: 0}
-  - {x: 0, y: 1}
+  - {x: 0, y: 2}
 --- !u!1 &823936174088066504
 GameObject:
   m_ObjectHideFlags: 0
