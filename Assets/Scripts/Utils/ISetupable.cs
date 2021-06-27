@@ -11,13 +11,13 @@ namespace Didenko.BattleCity.Utils
     public struct SetupData
     {
         public int lvl;
-        public SetupType setupType;
+        public DataType dataType;
         public CannonType cannonType;
 
-        public SetupData(int lvl, SetupType setupType, CannonType cannonType)
+        public SetupData(int lvl, DataType dataType, CannonType cannonType)
         {
             this.lvl = lvl;
-            this.setupType = setupType;
+            this.dataType = dataType;
             this.cannonType = cannonType;
         }
 

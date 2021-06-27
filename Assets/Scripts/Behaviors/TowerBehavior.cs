@@ -8,6 +8,9 @@ namespace Didenko.BattleCity.Behaviors
 {
     public class TowerBehavior : SpriteLoader, IConfigurable, ISetupable, IModuleDrop
     {
+        public int CurrentLvl { get => currentData.lvl; }
+        public DataType DataType => DataType.towerDatas;
+
         [SerializeField]
         private CannonBehavior cannonBehavior;
         [SerializeField]
@@ -17,8 +20,6 @@ namespace Didenko.BattleCity.Behaviors
 
         private List<TowerData> towerDatas;
         private TowerData currentData;
-
-        public DataType DataType => DataType.towerDatas;
 
         public void CalculateChance(BulletBehavior bulletBehavior)
         {
@@ -40,7 +41,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public void Setup(SetupData setupData)
         {
-            if (setupData.setupType != SetupType.Tower)
+            if (setupData.dataType != DataType)
                 return;
             currentData = towerDatas.Find(x => x.lvl == setupData.lvl);
 
@@ -50,12 +51,12 @@ namespace Didenko.BattleCity.Behaviors
         public void InitSetup()
         {
             int lvl = UnityEngine.Random.Range(1, towerDatas.Count + 1);
-            Setup(new SetupData(lvl, SetupType.Tower, CannonType.None));
+            Setup(new SetupData(lvl, DataType, CannonType.None));
         }
 
         public DropData DropModule()
         {
-            var data = new DropData(currentData.spriteName, currentData.lvl, SetupType.Tower, CannonType.None);
+            var data = new DropData(currentData.spriteName, currentData.lvl, DataType, CannonType.None);
             return data;
         }
     }

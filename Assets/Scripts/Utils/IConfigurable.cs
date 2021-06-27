@@ -9,6 +9,7 @@ namespace Didenko.BattleCity.Utils
     {
         void SetConfings(string data);
         DataType DataType { get; }
+        int CurrentLvl { get; }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

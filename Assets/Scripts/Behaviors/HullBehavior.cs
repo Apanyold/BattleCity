@@ -9,6 +9,7 @@ namespace Didenko.BattleCity.Behaviors
     public class HullBehavior : SpriteLoader, IConfigurable, ISetupable, IModuleDrop
     {
         public DataType DataType => DataType.hullDatas;
+        public int CurrentLvl { get => currentData.lvl; }
 
         [SerializeField]
         private AttackableBehavior attackableBehavior;
@@ -22,13 +23,13 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData DropModule()
         {
-            return new DropData(currentData.spriteName, currentData.lvl, SetupType.Hull, CannonType.None);
+            return new DropData(currentData.spriteName, currentData.lvl, DataType, CannonType.None);
         }
 
         public void InitSetup()
         {
             int lvl = UnityEngine.Random.Range(1, hullDatas.Count + 1);
-            Setup(new SetupData(lvl, SetupType.Hull, CannonType.None));
+            Setup(new SetupData(lvl, DataType, CannonType.None));
         }
 
         public void SetConfings(string data)
@@ -38,8 +39,9 @@ namespace Didenko.BattleCity.Behaviors
 
         public void Setup(SetupData setupData)
         {
-            if (setupData.setupType != SetupType.Hull)
+            if (setupData.dataType != DataType)
                 return;
+
             currentData = hullDatas.Find(x => x.lvl == setupData.lvl);
 
             attackableBehavior.Init(currentData.health);

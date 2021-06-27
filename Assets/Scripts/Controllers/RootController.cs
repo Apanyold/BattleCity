@@ -30,6 +30,8 @@ namespace Didenko.BattleCity.Controllers
         private PlayerController playerController;
         [SerializeField]
         private AiController aiController;
+        [SerializeField]
+        private AiManager aiManager;
 
         private Factory factory;
         private ConfigSetter configSetter;
@@ -63,40 +65,12 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-
             var vector2Ints = map.GetBasePositions();
-
             selectedRed = vector2Ints[0][UnityEngine.Random.Range(0, vector2Ints[0].Count)];
             selectedBlue = vector2Ints[1][UnityEngine.Random.Range(0, vector2Ints[1].Count)];
 
-            var playerTank = factory.CreateObject(PoolObject.Tank, new Vector3(selectedRed.x, selectedRed.y, 0), Team.Red).GetComponent<TankBehavior>();
-            playerTank.gameObject.GetComponent<HullBehavior>().Setup(new SetupData(1,SetupType.Hull, CannonType.None));
-            playerController.SetTank(playerTank);
-
-            var enemyTank = factory.CreateObject(PoolObject.Tank, new Vector3(selectedBlue.x, selectedBlue.y, 0), Team.Blue).GetComponent<TankBehavior>();
-            aiController.SetTank(enemyTank, pathfinder, map);
-
-            aiController.SetTarget(playerTank.gameObject);
-
-            //var redBase = Instantiate(basePrefab, transform.position + new Vector3(42, 42, 0), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
-            //redBase.Init(factory, Team.Red, map);
-
-            //var blueTank = factory.CreateObject(PoolObject.Tank, transform.position + new Vector3(-2,2,0), Team.Blue);
-
             OnPathBuilded += OnPathEnded;
-            //PlaceBases();
-
-            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-            //stopwatch.Start();
-            //var path = pathfinder.FidnPath(new Vector2Int(2, 2), new Vector2Int(38,38));
-            //stopwatch.Stop();
-            //Debug.Log(stopwatch.ElapsedMilliseconds);
-
-            //if(path != null)
-            //    foreach (var item in path)
-            //    {
-            //        Instantiate(marker, new Vector3(item.x * 2, item.y * 2, 0), new Quaternion(0, 0, 0, 0), mapHolder);
-            //    }
+            PlaceBases();
         }
 
         private void Start()
@@ -110,16 +84,11 @@ namespace Didenko.BattleCity.Controllers
             stopwatch.Start();
 
             pathfinder.FidnPathAsync(selectedBlue, selectedRed, OnPathEnded);
-            //await Task.Run(() => pathfinder.FidnPath(selectedRed, selectedBlue)).ContinueWith(value =>
-            //{
-            //    OnPathBuilded?.Invoke(value.Result);
-            //}, unityTaskScheduler);
         }
 
         private void OnPathEnded(Stack<Vector2Int> path)
         {
             stopwatch.Stop();
-            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             if (path == null)
             {
@@ -127,16 +96,20 @@ namespace Didenko.BattleCity.Controllers
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 return;
             }
-            foreach (var item in path)
-            {
-                Instantiate(marker, new Vector3(item.x, item.y, 0), new Quaternion(0, 0, 0, 0), mapHolder);
-            }
 
             var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x, selectedRed.y, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
             redBase.Init(factory, Team.Red, map);
 
+            //playerController.SetTank(redBase.ActiveTanks[0]);
+
             var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x, selectedBlue.y, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
             blueBase.Init(factory, Team.Blue, map);
+
+            var basesList = new List<BaseBehavior>();
+            basesList.Add(redBase);
+            basesList.Add(blueBase);
+
+            aiManager.Init(map, basesList);
         }
     }
 }

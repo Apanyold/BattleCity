@@ -256,3 +256,4 @@ MonoBehaviour:
   teamBehavior: {fileID: 2947992377440831302}
   tankCreationLimit: 30
   maxAliveTanks: 2
+  activeTanks: []

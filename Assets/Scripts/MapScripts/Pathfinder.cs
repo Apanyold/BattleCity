@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Didenko.BattleCity.Controllers;
-using System.Diagnostics;
-using Debug = UnityEngine.Debug;
 
 namespace Didenko.BattleCity.MapScripts
 {
     public class Pathfinder : MonoBehaviour
     {
-        Stopwatch stopwatch;
         private Map map;
         private int iterationLimit;
 
@@ -22,9 +19,6 @@ namespace Didenko.BattleCity.MapScripts
 
         public Stack<Vector2Int> FidnPath(Vector2Int startPosition, Vector2Int endposition)
         {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             var openedList = new List<Node>();
             var closedList = new List<Node>();
             var neighborsList = new List<Node>();
@@ -82,7 +76,7 @@ namespace Didenko.BattleCity.MapScripts
 
                     if (openNode == null)
                         openedList.Add(neighbourNode);
-                    //TODO check distance
+
                     else if(openNode.pathLenght > neighbourNode.pathLenght)
                     {
                         openNode.prevNode = currentNode;
@@ -111,8 +105,7 @@ namespace Didenko.BattleCity.MapScripts
                 vector2Ints.Push(currentNode.positon);
                 currentNode = currentNode.prevNode;
             }
-            stopwatch.Stop();
-            Debug.Log(stopwatch.ElapsedMilliseconds);
+            vector2Ints.Pop();
             return vector2Ints;
         }
 

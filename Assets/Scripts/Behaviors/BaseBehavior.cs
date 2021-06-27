@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
 using Didenko.BattleCity.MapScripts;
+using System;
 
 namespace Didenko.BattleCity.Behaviors
 {
     public class BaseBehavior : SpriteLoader
     {
+        public Action<TankBehavior> TankCreated;
+        public Team Team => team;
         public List<TankBehavior> ActiveTanks => activeTanks;
 
         [SerializeField]
@@ -22,14 +25,17 @@ namespace Didenko.BattleCity.Behaviors
 
         private Factory factory;
 
+        [SerializeField]
         private List<TankBehavior> activeTanks = new List<TankBehavior>();
 
         private Vector2Int[] spawnPoints;
         private List<Vector2Int> availablePoints = new List<Vector2Int>();
         private int pointTicker;
+        private Team team;
 
         public void Init(Factory factory, Team team, Map map)
         {
+            this.team = team;
             this.factory = factory;
             teamBehavior.SetTeam(team);
 
@@ -70,12 +76,18 @@ namespace Didenko.BattleCity.Behaviors
 
             tankCreationLimit--;
 
+            TankCreated?.Invoke(tank);
+
+            Physics2D.IgnoreCollision(tank.GetComponent<Collider2D>(), GetComponent<Collider2D>(), true);
+
             if (activeTanks.Count < maxAliveTanks)
                 TryCreateTanks();
         }
 
         private void OnTankCollectionChanged(TankBehavior tankBehavior)
         {
+            Physics2D.IgnoreCollision(tankBehavior.GetComponent<Collider2D>(), GetComponent<Collider2D>(), false);
+
             activeTanks.Remove(tankBehavior);
             TryCreateTanks();
         }

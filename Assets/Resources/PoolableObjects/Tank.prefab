@@ -275,6 +275,7 @@ MonoBehaviour:
   dropBehavior: {fileID: 7752965496635653476}
   moveBehavior: {fileID: 4524924082328152281}
   towerBehavior: {fileID: 4524924082328152257}
+  teamBehavior: {fileID: 4524924082328152263}
 --- !u!114 &7752965496635653476
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,8 @@ namespace Didenko.BattleCity.Behaviors
 
         [SerializeField]
         private PoolObjBehavior poolObj;
-        private DropData dropData;
+
+        public DropData DropData { get; private set; }
 
         private bool isDestroy = false;
 
@@ -23,14 +24,14 @@ namespace Didenko.BattleCity.Behaviors
 
         public void Init(Team team, DropData data)
         {
-            this.dropData = data;
+            this.DropData = data;
             LoadSpriteForTeam(data.spriteName, team);
             StartCoroutine(Rotate());
         }
 
         public DropData PickUp()
         {
-            var data = new DropData(dropData.spriteName, dropData.lvl, dropData.setupType, dropData.cannonType);
+            var data = new DropData(DropData.spriteName, DropData.lvl, DropData.dataType, DropData.cannonType);
             Destroy();
             return data;
         }
@@ -44,7 +45,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public void OnReturnToPool()
         {
-            dropData = new DropData();
+            DropData = new DropData();
             isDestroy = false;
         }
 
@@ -59,7 +60,6 @@ namespace Didenko.BattleCity.Behaviors
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            Debug.Log("Entered trigger: " + collision.name);
             if(collision.gameObject.TryGetComponent(out TankBehavior tankBehavior))
             {
                 tankBehavior.OnDropEntered(this);

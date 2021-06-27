@@ -14,14 +14,14 @@ namespace Didenko.BattleCity.Utils
     {
         public string spriteName;
         public int lvl;
-        public SetupType setupType;
+        public DataType dataType;
         public CannonType cannonType;
 
-        public DropData(string spriteName, int lvl, SetupType setupType, CannonType cannonType)
+        public DropData(string spriteName, int lvl, DataType dataType, CannonType cannonType)
         {
             this.spriteName = spriteName;
             this.lvl = lvl;
-            this.setupType = setupType;
+            this.dataType = dataType;
             this.cannonType = cannonType;
         }
     }

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Didenko.BattleCity.Utils;
+using System;
 
 namespace Didenko.BattleCity.Behaviors
 {
     public class AttackableBehavior: MonoBehaviour, IOnPoolReturn
     {
+        public Action<GameObject> DamageReceived;
         public int Health
         {
             get => health;
@@ -21,10 +23,15 @@ namespace Didenko.BattleCity.Behaviors
                 }
                 else
                     health = value;
-                Debug.Log(health);
             }
         }
         private int health;
+
+        public void ReceiveDamage(int damage, GameObject sender)
+        {
+            Health -= damage;
+            DamageReceived?.Invoke(sender);
+        }
 
         public void Init(int health)
         {

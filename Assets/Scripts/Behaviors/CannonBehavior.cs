@@ -13,10 +13,10 @@ namespace Didenko.BattleCity.Behaviors
     public class CannonBehavior : SpriteLoader, IConfigurable, ISetupable, IModuleDrop
     {
         public event Action<BulletBehavior> OnFired;
-
         public int BulletFlyDistance => currentData.flyDisnatce;
 
         public DataType DataType => DataType.cannonDatas;
+        public int CurrentLvl { get => currentData.lvl; }
 
         [SerializeField]
         private TeamBehavior teamBehavior;
@@ -38,7 +38,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public void Setup(SetupData setupData)
         {
-            if (setupData.setupType != SetupType.Cannon)
+            if (setupData.dataType != DataType)
                 return;
             currentData = cannonDatas.Find(x => x.cannonType == setupData.cannonType && x.lvl == setupData.lvl);
 
@@ -68,7 +68,7 @@ namespace Didenko.BattleCity.Behaviors
 
         public DropData DropModule()
         {
-            var data = new DropData(currentData.spriteName, currentData.lvl, SetupType.Cannon, currentData.cannonType);
+            var data = new DropData(currentData.spriteName, currentData.lvl, DataType, currentData.cannonType);
             return data;
         }
 
@@ -80,7 +80,7 @@ namespace Didenko.BattleCity.Behaviors
             var maxLvl = cannonDatas.FindAll(x => x.cannonType == cannonType).Count();
             int lvl = UnityEngine.Random.Range(1, maxLvl + 1);
 
-            Setup(new SetupData(lvl, SetupType.Cannon, cannonType));
+            Setup(new SetupData(lvl, DataType, cannonType));
         }
     }
 

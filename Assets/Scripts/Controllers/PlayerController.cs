@@ -14,7 +14,7 @@ namespace Didenko.BattleCity.Controllers
 
         private MoveBehavior moveBehavior;
         private CannonBehavior cannonBehavior;
-        private TankBehavior tankBehavior;
+        public TankBehavior tankBehavior;
 
         private int 
             horizontal,
@@ -23,6 +23,8 @@ namespace Didenko.BattleCity.Controllers
 
         public void SetTank(TankBehavior tankBehavior)
         {
+            tankBehavior.isControllerAttached = true;
+
             moveBehavior = tankBehavior.GetComponent<MoveBehavior>();
             cannonBehavior = tankBehavior.GetComponent<CannonBehavior>();
             this.tankBehavior = tankBehavior;
@@ -77,7 +79,7 @@ namespace Didenko.BattleCity.Controllers
             else if (Input.GetKeyDown(KeyCode.M) && canBePicked)
                 tankBehavior.DestroyDrop();
 
-            //Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
+            Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
         }
     }
 }
