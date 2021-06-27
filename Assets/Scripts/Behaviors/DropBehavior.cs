@@ -18,15 +18,12 @@ namespace Didenko.BattleCity.Behaviors
 
         public void DropModule()
         {
-
-            var data = this.gameObject.GetComponent<CannonBehavior>().DropModule();
-            //var modules = this.gameObject.GetComponents<IModuleDrop>();
-            //var i = Random.Range(0, modules.Length);
-            //var moduleData = modules[i].DropModule();
+            var modules = this.gameObject.GetComponents<IModuleDrop>();
+            var i = Random.Range(0, modules.Length);
+            var moduleData = modules[i].DropModule();
 
             var gameObject = factory.CreateObject(PoolObject.DroppedModule, transform.position, teamBehavior.Team);
-            //gameObject.GetComponent<DroppedModuleBehavior>().Init(teamBehavior.Team, moduleData);
-            gameObject.GetComponent<DroppedModuleBehavior>().Init(teamBehavior.Team, data);
+            gameObject.GetComponent<DroppedModuleBehavior>().Init(teamBehavior.Team, moduleData);
         }
 
         public void OnReturnToPool()

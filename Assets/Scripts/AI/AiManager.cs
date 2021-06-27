@@ -15,6 +15,7 @@ namespace Didenko.BattleCity.Ai
         private Map map;
 
         private List<BaseBehavior> baseBehaviors = new List<BaseBehavior>();
+        private Dictionary<AiController, TankBehavior> aiDic = new Dictionary<AiController, TankBehavior>();
         public void Init(Map map, List<BaseBehavior> baseBehaviors)
         {
             this.map = map;
@@ -41,7 +42,9 @@ namespace Didenko.BattleCity.Ai
 
         public void SetAiToTank(TankBehavior tankBehavior)
         {
-            var aiController = Instantiate(aiControllers[Random.Range(0, aiControllers.Length)], tankBehavior.transform);
+            AiController aiController;
+
+            aiController = Instantiate(aiControllers[Random.Range(0, aiControllers.Length)], tankBehavior.transform);
 
             aiController.Init(tankBehavior, new Pathfinder(map), map, this);
 
@@ -71,6 +74,7 @@ namespace Didenko.BattleCity.Ai
             var friendlyBase = baseBehaviors.Find(x => x.Team == team);
 
             var tankList = friendlyBase.ActiveTanks.FindAll(x => x != selfTank);
+
             var go = tankList[Random.Range(0, tankList.Count)].gameObject;
 
             if (!go.activeInHierarchy)

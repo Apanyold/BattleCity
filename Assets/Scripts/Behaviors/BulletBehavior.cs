@@ -63,9 +63,7 @@ namespace Didenko.BattleCity.Behaviors
             if (go != owner)
             {
                 if (isPenetrated && go.TryGetComponent(out AttackableBehavior attackableBehavior))
-                {
-                    attackableBehavior.Health -= damage;
-                }
+                    attackableBehavior.ReceiveDamage(damage, owner);
 
                 gameObject.GetComponent<PoolObjBehavior>().ReturnToPool();
             }

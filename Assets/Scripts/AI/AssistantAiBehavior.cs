@@ -10,6 +10,7 @@ namespace Didenko.BattleCity.Ai
     {
         public override AiType AiType => AiType.Assistant;
         private bool isDestroy = false;
+        private GameObject friend;
 
         private void Start()
         {
@@ -40,7 +41,7 @@ namespace Didenko.BattleCity.Ai
             if (isDestroy)
                 return;
 
-            var friend = aiManager.GetFriendlyTank(Team, tankBehavior);
+            friend = aiManager.GetFriendlyTank(Team, tankBehavior);
 
             friend.GetComponent<AttackableBehavior>().DamageReceived += FriendlyAttacked;
 
@@ -49,12 +50,17 @@ namespace Didenko.BattleCity.Ai
 
         private void FriendlyAttacked(GameObject enemy)
         {
+            if (isDestroy)
+                return;
             SetTargetToMove(enemy);
             SetTargetToShoot(enemy);
         }
 
         private void OnDestroy()
         {
+            friend.GetComponent<AttackableBehavior>().DamageReceived -= FriendlyAttacked;
+            TargetShootDestroyed = null;
+            TargetMoveDestroyed = null;
             isDestroy = true;
         }
     }

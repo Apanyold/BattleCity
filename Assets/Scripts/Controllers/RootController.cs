@@ -14,6 +14,9 @@ namespace Didenko.BattleCity.Controllers
 {
     public class RootController : MonoBehaviour
     {
+
+        public static int unityThread;
+        public static TaskScheduler unityTaskScheduler;
         public event Action<Stack<Vector2Int>> OnPathBuilded;
 
         [SerializeField]
@@ -42,11 +45,7 @@ namespace Didenko.BattleCity.Controllers
             selectedRed,
             selectedBlue;
 
-        private System.Diagnostics.Stopwatch stopwatch;
-
-        public static int unityThread;
-        public static TaskScheduler unityTaskScheduler;
-
+        private List<IGameEnder> gameEnders = new List<IGameEnder>();
 
         private void Awake()
         {
@@ -65,42 +64,49 @@ namespace Didenko.BattleCity.Controllers
 
             objectPooler.Init(factory);
 
-            var vector2Ints = map.GetBasePositions();
-            selectedRed = vector2Ints[0][UnityEngine.Random.Range(0, vector2Ints[0].Count)];
-            selectedBlue = vector2Ints[1][UnityEngine.Random.Range(0, vector2Ints[1].Count)];
-
             OnPathBuilded += OnPathEnded;
             PlaceBases();
+
+            foreach (var item in gameEnders)
+            {
+                item.EndGameForATeam += EndGameForTeam;
+            }
         }
 
-        private void Start()
+        private void EndGameForTeam(Team team)
         {
+            if(playerController.Team == team)
+            {
 
+            }
+            else
+            {
+
+            }
         }
 
         private void PlaceBases()
         {
-            stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
+            var vector2Ints = map.GetBasePositions();
+            selectedRed = vector2Ints[0][UnityEngine.Random.Range(0, vector2Ints[0].Count)];
+            selectedBlue = vector2Ints[1][UnityEngine.Random.Range(0, vector2Ints[1].Count)];
 
             pathfinder.FidnPathAsync(selectedBlue, selectedRed, OnPathEnded);
         }
 
         private void OnPathEnded(Stack<Vector2Int> path)
         {
-            stopwatch.Stop();
-
             if (path == null)
             {
                 Debug.Log("Path between bases is null, reloading scene");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 return;
             }
-
+            
             var redBase = Instantiate(basePrefab, new Vector3(selectedRed.x, selectedRed.y, objectPooler.GameZone.position.z), new Quaternion(0, 0, 90f, 0), objectPooler.GameZone);
             redBase.Init(factory, Team.Red, map);
 
-            //playerController.SetTank(redBase.ActiveTanks[0]);
+            playerController.SetTank(redBase.ActiveTanks[0]);
 
             var blueBase = Instantiate(basePrefab, new Vector3(selectedBlue.x, selectedBlue.y, objectPooler.GameZone.position.z), transform.rotation, objectPooler.GameZone);
             blueBase.Init(factory, Team.Blue, map);
@@ -110,6 +116,10 @@ namespace Didenko.BattleCity.Controllers
             basesList.Add(blueBase);
 
             aiManager.Init(map, basesList);
+
+            gameEnders.Add(blueBase);
+            gameEnders.Add(redBase);
+            gameEnders.Add(playerController);
         }
     }
 }

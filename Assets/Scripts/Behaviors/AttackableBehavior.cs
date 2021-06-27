@@ -25,6 +25,7 @@ namespace Didenko.BattleCity.Behaviors
                     health = value;
             }
         }
+        [SerializeField]
         private int health;
 
         public void ReceiveDamage(int damage, GameObject sender)

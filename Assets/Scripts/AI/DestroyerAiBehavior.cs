@@ -48,6 +48,8 @@ namespace Didenko.BattleCity.Ai
 
         private void OnDestroy()
         {
+            TargetShootDestroyed = null;
+            TargetMoveDestroyed = null;
             isDestroy = true;
         }
     }

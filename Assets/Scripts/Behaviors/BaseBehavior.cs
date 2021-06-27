@@ -7,11 +7,13 @@ using System;
 
 namespace Didenko.BattleCity.Behaviors
 {
-    public class BaseBehavior : SpriteLoader
+    public class BaseBehavior : SpriteLoader, IGameEnder
     {
         public Action<TankBehavior> TankCreated;
         public Team Team => team;
         public List<TankBehavior> ActiveTanks => activeTanks;
+
+        public Action<Team> EndGameForATeam { get ; set ; }
 
         [SerializeField]
         private AttackableBehavior attackableBehavior;
@@ -90,6 +92,15 @@ namespace Didenko.BattleCity.Behaviors
 
             activeTanks.Remove(tankBehavior);
             TryCreateTanks();
+        }
+
+        private void OnDestroy()
+        {
+            EndGameForATeam?.Invoke(team);
+            foreach (var tank in activeTanks)
+            {
+                tank.OnPullReturned -= OnTankCollectionChanged;
+            }
         }
     }
 }

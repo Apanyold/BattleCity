@@ -8,8 +8,10 @@ using System;
 
 namespace Didenko.BattleCity.Controllers 
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IGameEnder
     {
+        public Team Team { get; private set; }
+
         public Action OnPlayerTankDestroyed;
 
         private MoveBehavior moveBehavior;
@@ -21,23 +23,28 @@ namespace Didenko.BattleCity.Controllers
             vertical;
         private bool canBePicked;
 
+        public Action<Team> EndGameForATeam { get; set; }
+
         public void SetTank(TankBehavior tankBehavior)
         {
             tankBehavior.isControllerAttached = true;
-
             moveBehavior = tankBehavior.GetComponent<MoveBehavior>();
             cannonBehavior = tankBehavior.GetComponent<CannonBehavior>();
             this.tankBehavior = tankBehavior;
 
             this.tankBehavior.CanBeCollected += UpdateDropState;
             this.tankBehavior.OnPullReturned += OnTankPoolReturned;
+
+            Team = tankBehavior.Team;
         }
 
         public void OnTankPoolReturned(TankBehavior tankBehavior)
         {
+            EndGameForATeam?.Invoke(Team);
+
             tankBehavior.CanBeCollected -= UpdateDropState;
             tankBehavior.OnPullReturned -= OnTankPoolReturned;
-
+            tankBehavior = null;
             OnPlayerTankDestroyed?.Invoke();
         }
 
@@ -79,7 +86,7 @@ namespace Didenko.BattleCity.Controllers
             else if (Input.GetKeyDown(KeyCode.M) && canBePicked)
                 tankBehavior.DestroyDrop();
 
-            Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
+            //Camera.main.transform.position = new Vector3(tankBehavior.transform.position.x, tankBehavior.transform.position.y, Camera.main.transform.position.z);
         }
     }
 }

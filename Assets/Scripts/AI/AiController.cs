@@ -23,6 +23,8 @@ namespace Didenko.BattleCity.Ai
         [SerializeField]
         protected TankBehavior tankBehavior { get; private set; }
 
+        protected AiManager aiManager;
+
         private MoveBehavior moveBehavior;
         private CannonBehavior cannonBehavior;
         private Pathfinder pathfinder;
@@ -31,6 +33,9 @@ namespace Didenko.BattleCity.Ai
         private Stack<Vector2Int> movePath = new Stack<Vector2Int>();
         private Vector2Int currentPos;
         private Vector2Int pathPosition;
+        private GameObject 
+            prevShootTarget,
+            prevMoveTarget;
 
         private Team team;
         private MoveDirection moveDirection;
@@ -38,8 +43,6 @@ namespace Didenko.BattleCity.Ai
 
         private RaycastHit2D[] result;
         private ContactFilter2D filter = new ContactFilter2D();
-
-        protected AiManager aiManager;
 
         public virtual void Init(TankBehavior tankBehavior, Pathfinder pathfinder, Map map, AiManager aiManager)
         {
@@ -67,10 +70,17 @@ namespace Didenko.BattleCity.Ai
             if (!gameObject || !gameObject.activeInHierarchy)
                 return;
 
+            if(prevMoveTarget)
+                if (prevMoveTarget.TryGetComponent(out TankBehavior Tank))
+                    Tank.OnPullReturned -= MoveTargedDestroyed;
+
+
             this.targetToMove = targetToMove;
 
             if (targetToMove.TryGetComponent(out TankBehavior targetTank))
                 targetTank.OnPullReturned += MoveTargedDestroyed;
+
+            prevMoveTarget = targetToMove;
 
             StartCoroutine(FindPath());
         }
@@ -80,11 +90,16 @@ namespace Didenko.BattleCity.Ai
             if (!gameObject || !gameObject.activeInHierarchy)
                 return;
 
+            if (prevShootTarget)
+                if (prevShootTarget.TryGetComponent(out TankBehavior Tank))
+                    Tank.OnPullReturned -= ShootTargedDestroyed;
+
             this.targetToShoot = targetToShoot;
 
             if (targetToShoot.TryGetComponent(out TankBehavior targetTank))
                 targetTank.OnPullReturned += ShootTargedDestroyed;
 
+            prevShootTarget = targetToShoot;
             StartCoroutine(ShootWithDelay());
         }
 
@@ -153,9 +168,6 @@ namespace Didenko.BattleCity.Ai
                 if (!hit || hit.collider == null || hit.collider.gameObject == gameObject || hit.collider.gameObject == null)
                     continue;
 
-                //if (hit.collider.gameObject.TryGetComponent(out TeamBehavior teamBehavior) && teamBehavior.Team == team)
-                //    continue;
-
                 if (!hit.collider.gameObject.TryGetComponent(out AttackableBehavior a))
                     continue;
 
@@ -163,8 +175,6 @@ namespace Didenko.BattleCity.Ai
                     continue;
 
                 cannonBehavior.Fire();
-
-                Debug.DrawLine(tankBehavior.transform.position, hit.transform.position, Color.red);
             }
         }
 
@@ -175,11 +185,6 @@ namespace Didenko.BattleCity.Ai
 
             var pop = movePath.Peek();
             pathPosition = pop;
-
-            //foreach(var item in movePath)
-            //{
-            //    Destroy(Instantiate(Resources.Load("Prefabs/MarkerRed"), new Vector3(item.x, item.y, 0), new Quaternion(0, 0, 0, 0), GameObject.Find("MapHolder").transform), 0.5f);
-            //}
         }
 
         private IEnumerator FindPath()
