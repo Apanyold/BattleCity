@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using System;
 using System.Threading;
 using Didenko.BattleCity.Ai;
+using Didenko.BattleCity.Ui;
 
 namespace Didenko.BattleCity.Controllers
 {
     public class RootController : MonoBehaviour
     {
-
         public static int unityThread;
         public static TaskScheduler unityTaskScheduler;
         public event Action<Stack<Vector2Int>> OnPathBuilded;
@@ -32,15 +32,14 @@ namespace Didenko.BattleCity.Controllers
         [SerializeField]
         private PlayerController playerController;
         [SerializeField]
-        private AiController aiController;
-        [SerializeField]
         private AiManager aiManager;
+        [SerializeField]
+        private UiController uiController;
 
         private Factory factory;
         private ConfigSetter configSetter;
         private Pathfinder pathfinder;
 
-        private MapObjectBehavior marker;
         private Vector2Int
             selectedRed,
             selectedBlue;
@@ -49,10 +48,10 @@ namespace Didenko.BattleCity.Controllers
 
         private void Awake()
         {
+            GamePauser.GameState = GameState.Play;
+
             unityThread = Thread.CurrentThread.ManagedThreadId;
             unityTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
-            marker = Resources.Load<MapObjectBehavior>("Prefabs/MarkerBlue");
 
             map.InitMap();
             pathfinder = new Pathfinder(map);
@@ -67,21 +66,18 @@ namespace Didenko.BattleCity.Controllers
             OnPathBuilded += OnPathEnded;
             PlaceBases();
 
-            foreach (var item in gameEnders)
-            {
-                item.EndGameForATeam += EndGameForTeam;
-            }
+            uiController.Init(playerController);
         }
 
         private void EndGameForTeam(Team team)
         {
-            if(playerController.Team == team)
+            if(playerController.Team != team)
             {
-
+                uiController.ShowPlayerWin();
             }
             else
             {
-
+                uiController.ShowPlayerLose();
             }
         }
 
@@ -120,6 +116,12 @@ namespace Didenko.BattleCity.Controllers
             gameEnders.Add(blueBase);
             gameEnders.Add(redBase);
             gameEnders.Add(playerController);
+
+            foreach (var item in gameEnders)
+            {
+                item.EndGameForATeam += EndGameForTeam;
+            }
+
         }
     }
 }

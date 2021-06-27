@@ -10,6 +10,7 @@ namespace Didenko.BattleCity.Controllers
 {
     public class PlayerController : MonoBehaviour, IGameEnder
     {
+        public Action<bool, DroppedModuleBehavior> CanBeCollected;
         public Team Team { get; private set; }
 
         public Action OnPlayerTankDestroyed;
@@ -51,6 +52,8 @@ namespace Didenko.BattleCity.Controllers
         public void UpdateDropState(bool isCollectable, DroppedModuleBehavior droppedModuleBehavior)
         {
             canBePicked = isCollectable;
+
+            CanBeCollected?.Invoke(isCollectable, droppedModuleBehavior);
         }
 
         private void FixedUpdate()
