@@ -50,7 +50,9 @@ namespace Didenko.BattleCity.Behaviors
 
         public void InitSetup()
         {
-            int lvl = UnityEngine.Random.Range(1, towerDatas.Count + 1);
+            var maxLvl = towerDatas.Count;
+            int lvl = RandomMobuleSelector.ChooseRandomly(maxLvl, DataType);
+
             Setup(new SetupData(lvl, DataType, CannonType.None));
         }
 

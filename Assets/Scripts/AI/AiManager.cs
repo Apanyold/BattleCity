@@ -44,9 +44,15 @@ namespace Didenko.BattleCity.Ai
         {
             AiController aiController;
 
-            aiController = Instantiate(aiControllers[Random.Range(0, aiControllers.Length)], tankBehavior.transform);
+            var controller = aiControllers[Random.Range(0, aiControllers.Length)];
 
-            aiController.Init(tankBehavior, new Pathfinder(map), map, this);
+            aiController = Instantiate(controller, tankBehavior.transform);
+
+            var isIgnoreLastStep = false;
+            if (controller.AiType == AiType.Assistant)
+                isIgnoreLastStep = true;
+
+            aiController.Init(tankBehavior, new Pathfinder(map, isIgnoreLastStep), map, this);
 
             tankBehavior.OnPullReturned += OnAiPoolRetured;
         }
@@ -57,14 +63,26 @@ namespace Didenko.BattleCity.Ai
             return go;
         }
 
-        public GameObject GetEnemyTank(Team team)
+        public GameObject GetEnemyTank(Team team, GameObject selfTank)
         {
+            //TODO return closest tank
             var enemyBase = baseBehaviors.Find(x => x.Team != team);
 
-            var go = enemyBase.ActiveTanks[Random.Range(0, enemyBase.ActiveTanks.Count)].gameObject;
+            GameObject go = null;
+
+            var targetDistance = int.MaxValue;
+            foreach (var item in enemyBase.ActiveTanks)
+            {
+                var x = (int)Vector3.Distance(item.transform.position, selfTank.transform.position);
+                if (targetDistance > x)
+                {
+                    go = item.gameObject;
+                    targetDistance = x;
+                }
+            }
 
             if (!go.activeInHierarchy)
-                GetEnemyTank(team);
+                GetEnemyTank(team, selfTank);
 
             return go;
         }
@@ -75,7 +93,17 @@ namespace Didenko.BattleCity.Ai
 
             var tankList = friendlyBase.ActiveTanks.FindAll(x => x != selfTank);
 
-            var go = tankList[Random.Range(0, tankList.Count)].gameObject;
+            GameObject go = null;
+            var targetDistance = int.MaxValue;
+            foreach (var item in tankList)
+            {
+                var x = (int)Vector3.Distance(item.transform.position, selfTank.transform.position);
+                if (targetDistance > x)
+                {
+                    go = item.gameObject;
+                    targetDistance = x;
+                }
+            }
 
             if (!go.activeInHierarchy)
                 GetFriendlyTank(team, selfTank);

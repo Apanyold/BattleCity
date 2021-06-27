@@ -654,6 +654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogWindow: {fileID: 1352638975}
+  pickupDialog: {fileID: 327186054}
 --- !u!1 &907178102
 GameObject:
   m_ObjectHideFlags: 0

@@ -44,6 +44,8 @@ namespace Didenko.BattleCity.Ai
         private RaycastHit2D[] result;
         private ContactFilter2D filter = new ContactFilter2D();
 
+        private bool ignoreTanks = false, ignoreBases = false;
+
         public virtual void Init(TankBehavior tankBehavior, Pathfinder pathfinder, Map map, AiManager aiManager)
         {
             tankBehavior.isControllerAttached = true;
@@ -128,6 +130,7 @@ namespace Didenko.BattleCity.Ai
 
             TargetShootDestroyed?.Invoke();
         }
+
         private void MoveTargedDestroyed(TankBehavior tankBehavior)
         {
             targetToMove = null;
@@ -157,7 +160,10 @@ namespace Didenko.BattleCity.Ai
         {
             while (targetToShoot != null && tankBehavior != null)
             {
+
                 yield return new WaitForSeconds(0.5f);
+
+                canFire = false;
 
                 result = new RaycastHit2D[2];
 
@@ -168,14 +174,29 @@ namespace Didenko.BattleCity.Ai
                 if (!hit || hit.collider == null || hit.collider.gameObject == gameObject || hit.collider.gameObject == null)
                     continue;
 
-                if (!hit.collider.gameObject.TryGetComponent(out AttackableBehavior a))
+                var hitGo = hit.collider.gameObject;
+
+                if (!hitGo.TryGetComponent(out AttackableBehavior a))
                     continue;
 
-                if (hit.collider.gameObject.TryGetComponent(out TeamBehavior teamBehavior) && teamBehavior.Team == team)
+                if (hitGo.TryGetComponent(out TeamBehavior teamBehavior) && teamBehavior.Team == team)
                     continue;
 
+                if(hitGo.TryGetComponent(out BaseBehavior baseBehavior) && ignoreBases)
+                    continue;
+
+                if(hitGo.TryGetComponent(out TankBehavior tankBeh) && ignoreTanks)
+                    continue;
+
+                canFire = true;
                 cannonBehavior.Fire();
             }
+        }
+
+        protected void UpdateIgnoreList(bool ignoreTanks, bool ignoreBases)
+        {
+            this.ignoreTanks = ignoreTanks;
+            this.ignoreBases = ignoreBases;
         }
 
         private void MoveNext()
@@ -183,8 +204,7 @@ namespace Didenko.BattleCity.Ai
             if (movePath.Count == 0)
                 return;
 
-            var pop = movePath.Peek();
-            pathPosition = pop;
+            pathPosition = movePath.Peek();
         }
 
         private IEnumerator FindPath()
@@ -204,8 +224,8 @@ namespace Didenko.BattleCity.Ai
             if (targetToMove == null || tankBehavior == null)
                 return;
 
-            if(canFire)
-                StartCoroutine(ShootWithDelay());
+            if (canFire)
+                return;
 
             if (movePath == null || movePath.Count == 0)
                 return;

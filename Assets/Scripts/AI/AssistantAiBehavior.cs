@@ -33,7 +33,7 @@ namespace Didenko.BattleCity.Ai
             if (isDestroy)
                 return;
 
-            SetTargetToShoot(aiManager.GetEnemyTank(Team));
+            SetTargetToShoot(aiManager.GetEnemyTank(Team, gameObject));
         }
 
         private void SelectFriendTarget()

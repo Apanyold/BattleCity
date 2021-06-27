@@ -54,7 +54,7 @@ namespace Didenko.BattleCity.Controllers
             unityTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
             map.InitMap();
-            pathfinder = new Pathfinder(map);
+            pathfinder = new Pathfinder(map, false);
 
             configSetter = new ConfigSetter();
             configSetter.DownloadDatas(gameData);

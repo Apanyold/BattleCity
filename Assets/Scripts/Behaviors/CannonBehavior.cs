@@ -78,7 +78,8 @@ namespace Didenko.BattleCity.Behaviors
             var cannonType = (CannonType)array.GetValue(UnityEngine.Random.Range(0, array.Length - 1));
 
             var maxLvl = cannonDatas.FindAll(x => x.cannonType == cannonType).Count();
-            int lvl = UnityEngine.Random.Range(1, maxLvl + 1);
+
+            int lvl = RandomMobuleSelector.ChooseRandomly(maxLvl, DataType);
 
             Setup(new SetupData(lvl, DataType, cannonType));
         }

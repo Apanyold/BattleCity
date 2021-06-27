@@ -12,9 +12,12 @@ namespace Didenko.BattleCity.MapScripts
         private Map map;
         private int iterationLimit;
 
-        public Pathfinder(Map map)
+        private bool isIgnoreLastStep;
+
+        public Pathfinder(Map map, bool isIgnoreLastStep)
         {
             this.map = map;
+            this.isIgnoreLastStep = isIgnoreLastStep;
         }
 
         public Stack<Vector2Int> FidnPath(Vector2Int startPosition, Vector2Int endposition)
@@ -100,6 +103,10 @@ namespace Didenko.BattleCity.MapScripts
         {
             Stack<Vector2Int> vector2Ints = new Stack<Vector2Int>();
             var currentNode = node;
+
+            if (isIgnoreLastStep)
+                currentNode = node.prevNode;
+
             while (currentNode != null)
             {
                 vector2Ints.Push(currentNode.positon);

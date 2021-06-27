@@ -25,6 +25,8 @@ namespace Didenko.BattleCity.Ai
             SelectNewShootTarget();
             SelectNewMoveTarget();
 
+            UpdateIgnoreList(false, true);
+
             tankBehavior.OnPullReturned += _ => { if (!isDestroy) Destroy(gameObject); };
         }
 
@@ -33,7 +35,7 @@ namespace Didenko.BattleCity.Ai
             if (isDestroy)
                 return;
 
-            SetTargetToShoot(aiManager.GetEnemyTank(Team));
+            SetTargetToShoot(aiManager.GetEnemyTank(Team, gameObject));
         }
 
         private void SelectNewMoveTarget()
@@ -41,7 +43,7 @@ namespace Didenko.BattleCity.Ai
             if (isDestroy)
                 return;
 
-            SetTargetToMove(aiManager.GetEnemyTank(Team));
+            SetTargetToMove(aiManager.GetEnemyTank(Team, gameObject));
         }
 
         private void OnDestroy()

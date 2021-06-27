@@ -27,6 +27,8 @@ namespace Didenko.BattleCity.Ai
             SelectNewShootTarget();
             SelectNewMoveTarget();
 
+            UpdateIgnoreList(true, false);
+
             tankBehavior.OnPullReturned += _ => { if (!isDestroy) Destroy(gameObject); };
         }
 
