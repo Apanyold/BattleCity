@@ -7,6 +7,8 @@ A game similar to battlecity, the main features of which are:
 - AI with different behaviors
 - Procedural map generation
 
+In project implemented [A* algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) path search algorithm and the object pool pattern
+
 # Game features
 ## Two opposing teams
 There are 2 opposing teams in the game, red and blue. the default player is blue. Each team can have tanks controlled by AI
@@ -32,7 +34,7 @@ The game features 3 AI tanks with different behaviors:
   
  Each AI picks modules that are better than its current models.
  
- The search for the path of tanks works based on the [A* algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm)
+ The search for the path of tanks works based on the A* algorithm
  
  ## Procedural map generation
  Each game start and during the start of a new round, the map is randomly generated. 
